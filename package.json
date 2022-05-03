@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "esbuild": "^0.14.38"
+  },
+  "name": "gt-tester",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "esbuild test/res/js/src/main.js --bundle --outfile=test/res/js/bundle.js --minify",
+    "watch": "esbuild test/res/js/src/main.js --bundle --outfile=test/res/js/bundle.js --minify --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
