@@ -4,16 +4,16 @@ This tool makes it possible to run through GuidedTrack programs automatically, w
 
 # Getting started
 
-## 1. Add `\*trigger` events to your GT program.
+## 1. Add `*trigger` events to your GT program.
 
-For all of the pages in your program that should be controlled automatically, you'll need to create a `\*trigger` event and send data so that the `gt-tester` tool knows what to do on that page. Let's say, for example, that you have a question like this in your program:
+For all of the pages in your program that should be controlled automatically, you'll need to create a `*trigger` event and send data so that the `gt-tester` tool knows what to do on that page. Let's say, for example, that you have a question like this in your program:
 
 ```
 *question: What's your name?
 	*save: theirName
 ```
 
-To get `gt-tester` to type in an answer automatically, you'd need to add a `\*trigger` for a "gt-test" event and send along whatever you want to be typed (and a "submit" event), like this:
+To get `gt-tester` to type in an answer automatically, you'd need to add a `*trigger` for a "gt-test" event and send along whatever you want to be typed (and a "submit" event), like this:
 
 ```
 >> dataToSend = { "events" -> [] }
@@ -27,7 +27,7 @@ To get `gt-tester` to type in an answer automatically, you'd need to add a `\*tr
 	*save: theirName
 ```
 
-Importantly, this trigger must come right _before_ the relevant page! Also, check out the list at the bottom of this page for all possible `\*trigger` event types.
+Importantly, this trigger must come right _before_ the relevant page! Also, check out the list at the bottom of this page for all possible `*trigger` event types.
 
 ## 2. Make your program publicly available at the testing URL.
 
@@ -49,7 +49,7 @@ In the text field on the `gt-tester` home page, enter your program's ID. Then cl
 
 # Triggers
 
-Here's the complete list of possible `\*trigger` types. More will be added over time, so check back occasionally!
+Here's the complete list of possible `*trigger` types. More will be added over time, so check back occasionally!
 
 ```
 >> dataToSend = { "events" -> [] }
