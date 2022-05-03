@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://www.guidedtrack.com/assets/bootstrap.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://www.guidedtrack.com/assets/guidedtrack.css" />
+    <style>
+      #return {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="return" class="component alert alert-warning">
+      <a href="/">⟵ Return to the home page</a>
+    </div>
+
+    <div
+      aria-live="polite"
+      class="guidedtrack program_container"
+      id="REPLACE-ME"
+      data-environment="production">
+      <div id="program_navigation">
+        <div id="back-button"></div>
+        <div class="navigation_container"></div>
+        <div id="run-menu"></div>
+        <div class="points">
+          <div class="total"></div>
+          <div class="change"></div>
+        </div>
+      </div>
+      <div class="maintain"></div>
+      <div class="main"></div>
+    </div>
+
+    <script>
+      const container = document.getElementById("REPLACE-ME")
+      const search = window.location.search
+      const params = new URLSearchParams(search)
+      const id = params.get("id")
+
+      if (!id) {
+        window.location.href =
+          window.location.protocol + "//" + window.location.host
+      } else {
+        container.id = id
+      }
+    </script>
+    <script src="https://www.guidedtrack.com/assets/jquery_gt.js"></script>
+    <script src="https://www.guidedtrack.com/assets/bootstrap.min.js"></script>
+    <script src="https://www.guidedtrack.com/assets/gt_interpreter.js"></script>
+  </body>
+</html>
