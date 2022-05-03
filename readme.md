@@ -47,7 +47,7 @@ Navigate to https://gt-tester.vercel.app in your browser.
 
 In the text field on the `gt-tester` home page, enter your program's ID. Then click the "Test" button. The program should begin to run automatically!
 
-# Triggers
+# Event types
 
 Here's the complete list of possible `*trigger` types. More will be added over time, so check back occasionally!
 
