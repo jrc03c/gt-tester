@@ -1,0 +1,1 @@
+(()=>{var n=document.getElementById("REPLACE-ME"),t=window.location.search,c=new URLSearchParams(t),o=c.get("id");o?n.id=o:window.location.href=window.location.protocol+"//"+window.location.host;})();
