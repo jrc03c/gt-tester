@@ -47,7 +47,8 @@ async function run(_, data) {
         }
       } else if (value) {
         while (options.length === 0) {
-          options.push(getElementContainingText(value))
+          const el = getElementContainingText(value)
+          if (el) options.push(el)
           await pause(10)
         }
       }
