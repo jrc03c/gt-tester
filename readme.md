@@ -51,30 +51,22 @@ In the text field on the `gt-tester` home page, enter your program's ID. Then cl
 
 Here's the complete list of possible `*trigger` types. More will be added over time, so check back occasionally!
 
+- **enter-text** = enters text into the next available text field; accepts a text value
+- **click** = clicks on an element; accepts a text value that the clicked element should contain and/or a class name that the clicked element should have
+- **pause** = pauses the automation; accepts a number of milliseconds
+- **submit** = submits responses to the current question or page of questions
+
+For example:
+
 ```
 >> dataToSend = { "events" -> [] }
 >> dataToSend["events"].add({ "type" -> "enter-text", "value" -> "Alice" })
->> dataToSend["events"].add({ "type" -> "enter-text", "value" -> 25 })
->> dataToSend["events"].add({ "type" -> "click", "value" -> "chocolate" })
+>> dataToSend["events"].add({ "type" -> "click", "value" -> "chocolate", "class" -> "first-answer" })
 >> dataToSend["events"].add({ "type" -> "pause", "value" -> 2000 })
 >> dataToSend["events"].add({ "type" -> "submit" })
 
 *trigger: gt-test
 	*send: dataToSend
-
-*page
-	*question: What is your name?
-		*save: theirName
-
-	*question: How old are you?
-		*type: number
-		*save: theirAge
-
-	*question: What's your favorite flavor of ice cream?
-		*save: theirFavoriteIceCreamFlavor
-		chocolate
-		vanilla
-		strawberry
 ```
 
 Note that "submit" events aren't necessary on standalone multiple-choice question pages or any other pages that are submitted automatically when an answer is selected.
@@ -82,3 +74,11 @@ Note that "submit" events aren't necessary on standalone multiple-choice questio
 # Notes
 
 The nice thing about this setup is that it doesn't require any changes in your GT program code between development and production! Unless you just happen to have separate events called "gt-test" (which is probably very unlikely), then these triggers will fire silently during production and nothing will happen. They only do something at all when the program runs at the special testing URL (https://gt-tester.vercel.app)!
+
+# Demo
+
+Here's a demo of `gt-tester` in action:
+
+**GT program code:** https://www.guidedtrack.com/programs/19505/edit
+**Public program (non-automated):** https://www.guidedtrack.com/programs/odwuk6y/run
+**Public program (automated):** https://gt-tester.vercel.app/test/?id=odwuk6y
