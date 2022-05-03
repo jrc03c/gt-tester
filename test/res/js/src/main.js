@@ -1,5 +1,5 @@
-const getInteractiveElements = require("./get-interactive-elements.js")
 const getElementContainingText = require("./get-element-containing-text.js")
+const getTextInputElements = require("./get-text-input-elements.js")
 const pause = require("./pause.js")
 
 const container = document.getElementById("REPLACE-ME")
@@ -18,18 +18,7 @@ async function run(_, data) {
 
   const events = data.events
   const timeBetweenEvents = 100
-  const inputs = getInteractiveElements()
-
-  const textInputs = inputs.filter(input => {
-    const tagName = input.tagName.toLowerCase()
-    const validTags = ["input", "textarea"]
-    return validTags.indexOf(tagName) > -1
-  })
-
-  const clickableInputs = inputs.filter(input => textInputs.indexOf(input) < 0)
-
-  window.textInputs = textInputs
-  window.clickableInputs = clickableInputs
+  const textInputs = getTextInputElements()
 
   for (let i = 0; i < events.length; i++) {
     const event = events[i]
