@@ -79,6 +79,6 @@ The nice thing about this setup is that it doesn't require any changes in your G
 
 Here's a demo of `gt-tester` in action:
 
-**GT program code:** https://www.guidedtrack.com/programs/19505/edit
-**Public program (non-automated):** https://www.guidedtrack.com/programs/odwuk6y/run
-**Public program (automated):** https://gt-tester.vercel.app/test/?id=odwuk6y
+- **GT program code:** https://www.guidedtrack.com/programs/19505/edit
+- **Public program (non-automated):** https://www.guidedtrack.com/programs/odwuk6y/run
+- **Public program (automated):** https://gt-tester.vercel.app/test/?id=odwuk6y
