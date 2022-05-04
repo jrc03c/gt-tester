@@ -66,7 +66,9 @@ async function run(_, data) {
             "clicking on element",
             value ? `with value "${value}"` : "",
             whichClass ? `with class "${whichClass}"` : "",
-          ].join(" ") + "..."
+          ]
+            .join(" ")
+            .trim() + "..."
         )
       } else {
         console.warn("Couldn't find a clickable element for this event:", event)
