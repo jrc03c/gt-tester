@@ -84,3 +84,6 @@ Here's a demo of `gt-tester` in action:
 - **GT program code:** https://www.guidedtrack.com/programs/19505/edit
 - **Public program (non-automated):** https://www.guidedtrack.com/programs/odwuk6y/run
 - **Public program (automated):** https://gt-tester.vercel.app/test/?id=odwuk6y
+
+(NOTE: If you run the non-automated program and the automated program in the same browser instance, you may have to use the "Reset everything" menu option to start one 
+the test(s) over from the beginning. It's probably better, though, to test them in isolation by running each in an incognito / private browser instance.)
