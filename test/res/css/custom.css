@@ -43,6 +43,7 @@
 }
 
 .gt-tester-modal-body {
+  min-width: 400px;
   max-width: calc(768px - 2em);
   max-height: calc(100vh - 2em);
   padding: 1em;
@@ -89,10 +90,8 @@
 
 @media (max-width: 768px) {
   .gt-tester-modal-body {
-    position: fixed;
-    left: 1em;
-    top: 1em;
     width: calc(100vw - 2em);
-    height: calc(100vh - 2em);
+    min-width: unset;
+    max-width: unset;
   }
 }
