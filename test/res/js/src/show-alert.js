@@ -4,6 +4,7 @@ const Vue = require("vue")
 function showAlert(message, level) {
   const cleanedMessage = DOMPurify.sanitize(message)
   level = level || "info"
+  console.log("showing alert:", message, level)
 
   return new Promise((resolve, reject) => {
     try {
