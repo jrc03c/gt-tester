@@ -54,6 +54,7 @@ Here's the complete list of possible `*trigger` types. More will be added over t
 - **enter-text** = enters text into the next available text field; accepts a text value
 - **click** = clicks on an element; accepts a text value that the clicked element should contain and/or a class name that the clicked element should have
 - **pause** = pauses the automation; accepts a number of milliseconds
+- **alert** = shows an alert, pausing execution until the alert is dismissed; accepts a text value and (optionally) a "level" of importance (e.g., "info", "warning", "danger"; and the default is "info" if a value isn't provided)
 - **submit** = submits responses to the current question or page of questions
 
 For example:
@@ -63,6 +64,7 @@ For example:
 >> dataToSend["events"].add({ "type" -> "enter-text", "value" -> "Alice" })
 >> dataToSend["events"].add({ "type" -> "click", "value" -> "chocolate", "class" -> "first-answer" })
 >> dataToSend["events"].add({ "type" -> "pause", "value" -> 2000 })
+>> dataToSend["events"].add({ "type" -> "alert", "value" -> "Oh, no!", "level" -> "danger" })
 >> dataToSend["events"].add({ "type" -> "submit" })
 
 *trigger: gt-test

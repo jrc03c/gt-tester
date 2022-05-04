@@ -1,6 +1,7 @@
 const getElementContainingText = require("./get-element-containing-text.js")
 const getTextInputElements = require("./get-text-input-elements.js")
 const pause = require("./pause.js")
+const showAlert = require("./show-alert.js")
 
 const container = document.getElementById("REPLACE-ME")
 const search = window.location.search
@@ -80,6 +81,12 @@ async function run(_, data) {
       const ms = parseInt(event.value)
       console.log("pausing for milliseconds:", ms)
       await pause(ms)
+    }
+
+    // show an alert
+    else if (event.type === "alert") {
+      console.log("showing alert:", event.value, event.level || "info")
+      await showAlert(event.value, event.level)
     }
 
     // submit responses
