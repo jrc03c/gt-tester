@@ -19,13 +19,23 @@ async function run(_, data) {
 
   const events = data.events
   const timeBetweenEvents = 100
-  const textInputs = getTextInputElements()
 
   for (let i = 0; i < events.length; i++) {
     const event = events[i]
 
     // enter text
     if (event.type === "enter-text") {
+      const textInputs = getTextInputElements()
+
+      if (textInputs.length === 0) {
+        console.warn(
+          "No text input fields were found in which to put value:",
+          event.value
+        )
+
+        continue
+      }
+
       const input = textInputs[0]
       textInputs.splice(0, 1)
       input.value = event.value.toString()
@@ -41,17 +51,20 @@ async function run(_, data) {
       let options = []
 
       if (whichClass) {
-        while (options.length === 0) {
-          const els = Array.from(document.getElementsByClassName(whichClass))
-          options = options.concat(els)
-          await pause(10)
-        }
+        const els = Array.from(document.getElementsByClassName(whichClass))
+        options = options.concat(els)
       } else if (value) {
-        while (options.length === 0) {
-          const el = getElementContainingText(value)
-          if (el) options.push(el)
-          await pause(10)
-        }
+        const el = getElementContainingText(value)
+        if (el) options.push(el)
+      }
+
+      if (options.length === 0) {
+        let message = "No clickable elements were found"
+        if (value) message += ` containing the value "${value}"`
+        if (whichClass) message += ` with class "${whichClass}"`
+        message += "!"
+        console.warn(message)
+        continue
       }
 
       if (value) {
@@ -93,12 +106,18 @@ async function run(_, data) {
     else if (event.type === "submit") {
       console.log("submitting responses...")
 
-      const defaultButtons = Array.from(
+      let defaultButtons = Array.from(
         document.getElementsByClassName("btn-default")
       )
-      const primaryButtons = Array.from(
+
+      let primaryButtons = Array.from(
         document.getElementsByClassName("btn-primary")
       )
+
+      if (defaultButtons.length === 0 && primaryButtons.length === 0) {
+        console.warn("No 'submit' buttons were found!")
+        continue
+      }
 
       const button =
         defaultButtons.length > 0
