@@ -60,7 +60,14 @@ async function run(_, data) {
       if (options.length > 0) {
         const input = options[0]
         $(input).trigger("click")
-        console.log("clicking on element:", input)
+
+        console.log(
+          [
+            "clicking on element",
+            value ? `with value "${value}"` : "",
+            whichClass ? `with class "${whichClass}"` : "",
+          ].join(" ") + "..."
+        )
       } else {
         console.warn("Couldn't find a clickable element for this event:", event)
       }
