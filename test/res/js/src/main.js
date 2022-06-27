@@ -8,11 +8,22 @@ const container = document.getElementById("REPLACE-ME")
 const search = window.location.search
 const params = new URLSearchParams(search)
 const id = params.get("id")
+const mode = params.get("mode") || "preview"
 
 if (!id) {
   window.location.href = window.location.protocol + "//" + window.location.host
 } else {
   container.id = id
+  localStorage.setItem("last-id", id)
+}
+
+if (mode === "preview") {
+  container.setAttribute("data-mode", "test")
+  document.getElementById("mode").innerHTML = "🚧&nbsp; PREVIEW MODE &nbsp;🚧"
+  localStorage.setItem("last-mode", "preview")
+} else {
+  document.getElementById("mode").innerHTML = "🏁&nbsp; RUN MODE &nbsp;🏁"
+  localStorage.setItem("last-mode", "run")
 }
 
 async function run(_, data) {

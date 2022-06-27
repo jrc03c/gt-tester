@@ -3,49 +3,79 @@
   <head>
     <title>GuidedTrack Program Tester</title>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+      :root {
+        --padding: 1em;
+      }
+
       *,
       input,
       button {
         font-family: sans-serif;
         font-size: 16px;
-        line-height: 1.5em;
+        line-height: calc(1.5 * var(--padding));
+      }
+
+      h1,
+      p,
+      fieldset {
+        margin: 0 0 var(--padding) 0;
+      }
+
+      button,
+      input,
+      fieldset {
+        border: 1px solid gray;
+        border-radius: 4px;
       }
 
       input {
         font-family: monospace;
         width: 100%;
-        padding: 0.25em;
+        padding: calc(0.5 * var(--padding));
         box-sizing: border-box;
       }
 
       input[type="submit"] {
         font-family: sans-serif;
-        padding: 0.5em;
+        padding: calc(0.5 * var(--padding));
         cursor: pointer;
       }
 
       h1 {
         font-size: 32px;
-        line-height: 1.25em;
       }
 
       body {
-        width: calc(768px - 2em);
-        min-width: calc(768px - 2em);
-        max-width: calc(768px - 2em);
-        margin: 2em auto;
+        width: calc(768px - calc(2 * var(--padding)));
+        min-width: calc(768px - calc(2 * var(--padding)));
+        max-width: calc(768px - calc(2 * var(--padding)));
+        margin: calc(2 * var(--padding)) auto;
+      }
+
+      .radio-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-content: flex-start;
+        align-items: flex-start;
+      }
+
+      .radio {
+        width: 1em;
+        height: 1em;
+        margin: calc(0.22 * var(--padding)) calc(0.5 * var(--padding)) 0 var(--padding);
+        padding: 0;
       }
 
       @media (max-width: 768px) {
         body {
-          width: calc(100% - 2em);
-          min-width: calc(100% - 2em);
-          max-width: calc(100% - 2em);
-          margin: 1em;
+          width: calc(100% - calc(2 * var(--padding)));
+          min-width: calc(100% - calc(2 * var(--padding)));
+          max-width: calc(100% - calc(2 * var(--padding)));
+          margin: var(--padding);
         }
       }
     </style>
@@ -70,11 +100,39 @@
         <input type="text" id="the-text-input" autofocus />
       </p>
 
-      <input type="submit" value="Test" />
+      <p>
+        <b>Mode:</b>
+      </p>
+
+      <p>
+        <div class="radio-container">
+          <input type="radio" class="radio" id="run-mode" name="run-mode" />
+
+          <label for="run-mode" class="radio-label">
+            <b>Run</b>
+            → responses will be marked as "data" and runtime errors will not be displayed
+          </label>
+        </div>
+
+        <div class="radio-container">
+          <input
+            type="radio"
+            class="radio"
+            id="preview-mode"
+            name="preview-mode" />
+
+          <label for="preview-mode" class="radio-label">
+            <b>Preview</b>
+            → responses will be marked as "test" and runtime errors will be displayed
+          </label>
+        </div>
+      </p>
+
+      <input type="submit" value="Start testing!" />
     </form>
 
     <script>
-      function openTesterWithID(id) {
+      function openTesterWithID(id, mode) {
         window.location.href =
           window.location.protocol +
           "//" +
@@ -82,7 +140,9 @@
           window.location.pathname +
           (window.location.pathname.endsWith("/") ? "" : "/") +
           "test/?id=" +
-          id
+          id +
+          "&mode=" +
+          mode
       }
 
       window.addEventListener("load", () => {
@@ -93,6 +153,22 @@
         if (id) {
           return openTesterWithID(id)
         }
+
+        let mode = "preview"
+        const runRadio = document.getElementById("run-mode")
+        const previewRadio = document.getElementById("preview-mode")
+        runRadio.checked = mode === "run"
+        previewRadio.checked = mode === "preview"
+
+        runRadio.addEventListener("input", () => {
+          mode = "run"
+          previewRadio.checked = false
+        })
+
+        previewRadio.addEventListener("input", () => {
+          mode = "preview"
+          runRadio.checked = false
+        })
 
         const form = document.getElementById("the-form")
         const input = document.getElementById("the-text-input")
@@ -108,8 +184,28 @@
             return
           }
 
-          return openTesterWithID(id)
+          return openTesterWithID(id, mode)
         })
+
+        const lastID = localStorage.getItem("last-id")
+        const lastMode = localStorage.getItem("last-mode")
+
+        if (lastID){
+          input.value = lastID
+          input.focus()
+          input.select()
+        }
+
+        if (lastMode){
+          if (lastMode === "preview"){
+            mode = "preview"
+          } else {
+            mode = "run"
+          }
+
+          runRadio.checked = mode === "run"
+          previewRadio.checked = mode === "preview"
+        }
       })
     </script>
   </body>

@@ -1,5 +1,14 @@
-#return {
-  text-align: center;
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+}
+
+#mode {
+  font-weight: bold;
 }
 
 .gt-tester-modal {
@@ -89,6 +98,15 @@
 }
 
 @media (max-width: 768px) {
+  .top-bar {
+    margin-top: 3.5em;
+    margin-bottom: 0;
+  }
+
+  .main {
+    padding-top: 1em !important;
+  }
+
   .gt-tester-modal-body {
     width: calc(100vw - 2em);
     min-width: unset;
