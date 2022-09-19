@@ -4,17 +4,33 @@ const pause = require("./pause.js")
 const showAlert = require("./show-alert.js")
 const submit = require("./submit.js")
 
-const container = document.getElementById("REPLACE-ME")
-const search = window.location.search
-const params = new URLSearchParams(search)
-const id = params.get("id")
-const mode = params.get("mode") || "preview"
+let container = document.getElementById("REPLACE-ME")
+let mode
 
-if (!id) {
-  window.location.href = window.location.protocol + "//" + window.location.host
+if (container) {
+  const search = window.location.search
+  const params = new URLSearchParams(search)
+  const id = params.get("id")
+  mode = params.get("mode") || "preview"
+
+  if (!id) {
+    window.location.href =
+      window.location.protocol + "//" + window.location.host
+  } else {
+    container.id = id
+    localStorage.setItem("last-id", id)
+  }
 } else {
-  container.id = id
-  localStorage.setItem("last-id", id)
+  const programContainers = document.getElementsByClassName("program_container")
+
+  if (!programContainers || programContainers.length === 0) {
+    throw new Error(
+      "No GuidedTrack program container element exists! Make sure you copy the HTML embed code from your program's 'Publish' page into this file before trying to run the program!"
+    )
+  }
+
+  container = programContainers[0]
+  mode = container.getAttribute("data-mode") || "preview"
 }
 
 if (mode === "preview") {
@@ -70,13 +86,16 @@ async function run(_, data) {
 let canRun = false
 
 let interval = setInterval(() => {
+  // eslint-disable-next-line no-undef
   if (!$) return
   clearInterval(interval)
 
+  // eslint-disable-next-line no-undef
   $(window).on("guidedtrack:pageEnd", () => {
     canRun = true
   })
 
+  // eslint-disable-next-line no-undef
   $(window).on("gt-test", async (event, data) => {
     while (!canRun) {
       await pause(10)
