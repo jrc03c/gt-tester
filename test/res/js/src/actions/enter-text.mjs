@@ -1,6 +1,6 @@
 import { getTextInputElements } from "../utils/get-text-input-elements.mjs"
 
-async function enterText() {
+async function enterText(text) {
   const textString = text.toString()
   const textInputElements = getTextInputElements()
 

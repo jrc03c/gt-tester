@@ -32,10 +32,10 @@ const template = /* html */ `
 
 import { createApp } from "vue/dist/vue.esm-browser.prod.js"
 import { createVueComponentWithCSS } from "@jrc03c/vue-component-with-css"
-import { DOMPurify } from "dompurify"
+import { sanitize } from "dompurify"
 
 function showAlert(message, level) {
-  const cleanedMessage = DOMPurify.sanitize(message)
+  const cleanedMessage = sanitize(message)
   level = level || "info"
   console.log("showing alert:", message, level)
 

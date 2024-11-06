@@ -1,6 +1,7 @@
 import { click } from "./actions/click.mjs"
 import { enterText } from "./actions/enter-text.mjs"
 import { pause } from "@jrc03c/pause"
+import { selectSliderValue } from "./actions/select-slider-value.mjs"
 import { showAlert } from "./actions/show-alert.mjs"
 import { submitResponses } from "./actions/submit-responses.mjs"
 
@@ -34,6 +35,7 @@ if (mode === "preview") {
 async function run(_, data) {
   canRun = false
 
+  console.log("events:", data.events)
   const events = data.events
   const timeBetweenEvents = 100
 
@@ -48,6 +50,12 @@ async function run(_, data) {
     // click something
     else if (event.type === "click") {
       await click(event.value, event.class)
+    }
+
+    // select a slider value
+    else if (event.type === "select-slider-value") {
+      console.log("getting ready to invoke the selectSliderValue function...")
+      await selectSliderValue(event.value, event.selector)
     }
 
     // pause temporarily
@@ -74,8 +82,13 @@ async function run(_, data) {
 let canRun = false
 
 let interval = setInterval(() => {
-  if (!$) return
+  if (!$) {
+    console.log("waiting for jquery to load...")
+    return
+  }
+
   clearInterval(interval)
+  console.log("jquery finished loading!")
 
   $(window).on(GUIDEDTRACK_PAGE_END_EVENT, () => {
     canRun = true

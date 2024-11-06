@@ -104,7 +104,8 @@ Here's a demo of `gt-tester` in action:
     - clicking on a particular element
     - typing in a particular element
     - pausing for a certain amount of time
-    - showing (and dismissing) an alert
+    - show a dismissable alert
+    - show a pop-up notification or toast
     - submitting responses
 - Add a checkbox on the home page to reset a program's progress in case the previous run didn't finish. I originally thought that this should be the default, but upon reflection I realized that there are probably times where we'd want to test what happens if a user returns to the program in the middle of a run. I mean, the checkbox could still be checked by default, but I still want to provide a way to disable automatic resetting.
   - the reset URL is: `https://www.guidedtrack.com/programs/<id>/rerun?_redirect=<next_url>`
