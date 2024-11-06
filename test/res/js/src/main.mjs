@@ -1,8 +1,8 @@
-import { click } from "./click.mjs"
-import { getEnterTextFunction } from "./get-enter-text-function.mjs"
+import { click } from "./actions/click.mjs"
+import { enterText } from "./actions/enter-text.mjs"
 import { pause } from "@jrc03c/pause"
-import { showAlert } from "./show-alert.mjs"
-import { submit } from "./submit.mjs"
+import { showAlert } from "./actions/show-alert.mjs"
+import { submitResponses } from "./actions/submit-responses.mjs"
 
 // NOTE: This event is unofficial and may change! It may be better in the long
 // run to watch for the point in time where everything "settles down" and the
@@ -36,7 +36,6 @@ async function run(_, data) {
 
   const events = data.events
   const timeBetweenEvents = 100
-  const enterText = getEnterTextFunction()
 
   for (let i = 0; i < events.length; i++) {
     const event = events[i]
@@ -64,8 +63,8 @@ async function run(_, data) {
     }
 
     // submit responses
-    else if (event.type === "submit") {
-      await submit()
+    else if (event.type === "submit-responses") {
+      await submitResponses()
     }
 
     await pause(timeBetweenEvents)

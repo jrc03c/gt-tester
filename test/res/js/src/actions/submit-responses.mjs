@@ -1,4 +1,4 @@
-async function submit() {
+async function submitResponses() {
   console.log("submitting responses...")
 
   let defaultButtons = Array.from(
@@ -22,4 +22,4 @@ async function submit() {
   $(button).click()
 }
 
-export { submit }
+export { submitResponses }

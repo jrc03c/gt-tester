@@ -1,4 +1,4 @@
-import { getElementContainingText } from "./get-element-containing-text.mjs"
+import { getElementContainingText } from "../utils/get-element-containing-text.mjs"
 
 async function click(value, classname) {
   if (value) value = value.toString()
