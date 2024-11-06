@@ -54,7 +54,6 @@ async function run(_, data) {
 
     // select a slider value
     else if (event.type === "select-slider-value") {
-      console.log("getting ready to invoke the selectSliderValue function...")
       await selectSliderValue(event.value, event.selector)
     }
 

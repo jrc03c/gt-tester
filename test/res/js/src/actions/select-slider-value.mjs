@@ -5,16 +5,22 @@ function remap(x, a, b, c, d) {
 }
 
 async function selectSliderValue(value, selector) {
+  console.log("selecting slider value:", value)
+
   selector = selector || ".slider"
   let slider = document.querySelector(selector)
-  let handle = slider.querySelector(".slider-handle")
 
-  while (!slider || !handle) {
-    console.log("waiting for slider and/or handle to appear...")
+  while (!slider) {
     await pause(100)
+    slider = document.querySelector(selector)
   }
 
-  console.log("selecting slider value:", value)
+  let handle = slider.querySelector(".slider-handle")
+
+  while (!handle) {
+    await pause(100)
+    handle = slider.querySelector(".slider-handle")
+  }
 
   let min = handle.getAttribute("aria-valuemin")
   let max = handle.getAttribute("aria-valuemax")
@@ -39,7 +45,29 @@ async function selectSliderValue(value, selector) {
 
   const y = sliderRect.y + sliderRect.height / 2
 
-  document.elementFromPoint(x, y).click()
+  const tooltip = slider.querySelector(".tooltip")
+  const tooltipInner = tooltip.querySelector(".tooltip-inner")
+  const sliderSelection = slider.querySelector(".slider-selection")
+  const sliderTrackHigh = slider.querySelector(".slider-track-high")
+
+  const percent = (100 * (value - min)) / (max - min)
+  handle.style.left = percent.toFixed(2) + "%"
+  tooltip.style.left = percent.toFixed(2) + "%"
+  sliderSelection.style.width = percent.toFixed(2) + "%"
+  sliderTrackHigh.width = (100 - percent).toFixed(2) + "%"
+  tooltipInner.textContent = value.toFixed(2)
+
+  const callback = () => {
+    try {
+      slider.dispatchEvent(
+        new MouseEvent("mousedown", { clientX: x, clientY: y }),
+      )
+    } catch (e) {}
+
+    $(window).off("before-submit-responses", callback)
+  }
+
+  $(window).on("before-submit-responses", callback)
 }
 
 export { selectSliderValue }
