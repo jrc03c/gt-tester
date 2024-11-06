@@ -90,5 +90,13 @@ Here's a demo of `gt-tester` in action:
 # To do
 
 - Add support for all possible action types (e.g., playing an audio file, playing a video file, logging in, making a purchase, etc.). I'm not sure if this is feasible for all action types — for example, logging in probably temporarily navigates away from the program to perform an OAuth login, in which case there will be no way to control what'll happen there — but I'll give it a shot anyway!
+  - keywords: `audio`, `button`, `chart`, `clear`, `component`, `database`, `email`, `events`, `experiment`, `for`, `goto`, `group`, `html`, `if`, `image`, `label`, `list`, `login`, `maintain`, `navigation`, `page`, `points`, `program`, `progress`, `purchase`, `question`, `quit`, `randomize`, `repeat`, `return`, `service`, `set`, `settings`, `share`, `summary`, `switch`, `trigger`, `video`, `wait`, `while`
+  - actions:
+    - clicking on a particular element
+    - typing in a particular element
+    - pausing for a certain amount of time
+    - showing (and dismissing) an alert
+    - submitting responses
 - Add a checkbox on the home page to reset a program's progress in case the previous run didn't finish. I originally thought that this should be the default, but upon reflection I realized that there are probably times where we'd want to test what happens if a user returns to the program in the middle of a run. I mean, the checkbox could still be checked by default, but I still want to provide a way to disable automatic resetting.
+  - the reset URL is: `https://www.guidedtrack.com/programs/<id>/rerun?_redirect=<next_url>`
 - Add the ability to provide actions _without_ modifying the program. It can be a pain to edit an entire program just to test it out. For example, the Clearer Thinking team probably wouldn't want to add testing comments to all of their programs; it'd be easier for them to leave the program alone and to specify the actions from the `gt-tester` home page.
