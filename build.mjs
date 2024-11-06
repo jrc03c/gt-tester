@@ -7,9 +7,9 @@ function rebuild() {
 
   try {
     const commands = [
-      `npx esbuild test/res/js/src/main.mjs --bundle --minify --platform=node --outfile=test/res/js/bundle.require.cjs`,
-      `npx esbuild test/res/js/src/main.mjs --bundle --minify --outfile=test/res/js/bundle.standalone.cjs`,
-      `npx esbuild test/res/js/src/main.mjs --bundle --minify --format=esm --outfile=test/res/js/bundle.import.mjs`,
+      `npx esbuild test/res/js/src/main.mjs --bundle --platform=node --outfile=test/res/js/bundle.require.cjs`,
+      `npx esbuild test/res/js/src/main.mjs --bundle --outfile=test/res/js/bundle.standalone.cjs`,
+      `npx esbuild test/res/js/src/main.mjs --bundle --format=esm --outfile=test/res/js/bundle.import.mjs`,
     ]
 
     commands.forEach(command => {

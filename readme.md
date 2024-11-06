@@ -13,12 +13,12 @@ For all of the pages in your program that should be controlled automatically, yo
 	*save: theirName
 ```
 
-To get `gt-tester` to type in an answer automatically, you'd need to add a `*trigger` for a "gt-test" event and send along whatever you want to be typed (and a "submit" event), like this:
+To get `gt-tester` to type in an answer automatically, you'd need to add a `*trigger` for a "gt-test" event and send along whatever you want to be typed (and a "submit-responses" event), like this:
 
 ```
 >> dataToSend = { "events" -> [] }
 >> dataToSend["events"].add({ "type" -> "enter-text", "value" -> "Alice" })
->> dataToSend["events"].add({ "type" -> "submit" })
+>> dataToSend["events"].add({ "type" -> "submit-responses" })
 
 *trigger: gt-test
 	*send: dataToSend
@@ -51,11 +51,12 @@ In the text field on the `gt-tester` home page, enter your program's ID. Then cl
 
 Here's the complete list of possible `*trigger` types. More will be added over time, so check back occasionally!
 
-- **enter-text** = enters text into the next available text field; accepts a text value
-- **click** = clicks on an element; accepts a text value that the clicked element should contain and/or a class name that the clicked element should have
-- **pause** = pauses the automation; accepts a number of milliseconds
 - **alert** = shows an alert, pausing execution until the alert is dismissed; accepts a text value and (optionally) a "level" of importance (e.g., "info", "warning", "danger"; and the default is "info" if a value isn't provided)
-- **submit** = submits responses to the current question or page of questions
+- **click** = clicks on an element; accepts a text value that the clicked element should contain and/or a class name that the clicked element should have
+- **enter-text** = enters text into the next available text field; accepts a text value
+- **pause** = pauses the automation; accepts a number of milliseconds
+- **select-slider-value** = selects a particular value along a slider input
+- **submit-responses** = submits responses to the current question or page of questions
 
 For example:
 
@@ -65,13 +66,13 @@ For example:
 >> dataToSend["events"].add({ "type" -> "click", "value" -> "chocolate", "class" -> "first-answer" })
 >> dataToSend["events"].add({ "type" -> "pause", "value" -> 2000 })
 >> dataToSend["events"].add({ "type" -> "alert", "value" -> "Oh, no!", "level" -> "danger" })
->> dataToSend["events"].add({ "type" -> "submit" })
+>> dataToSend["events"].add({ "type" -> "submit-responses" })
 
 *trigger: gt-test
 	*send: dataToSend
 ```
 
-Note that "submit" events aren't necessary on standalone multiple-choice question pages or any other pages that are submitted automatically when an answer is selected.
+Note that "submit-responses" events aren't necessary on standalone multiple-choice question pages or any other pages that are submitted automatically when an answer is selected.
 
 # Notes
 
