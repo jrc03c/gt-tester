@@ -4,6 +4,11 @@ import { pause } from "@jrc03c/pause"
 import { showAlert } from "./show-alert.mjs"
 import { submit } from "./submit.mjs"
 
+// NOTE: This event is unofficial and may change! It may be better in the long
+// run to watch for the point in time where everything "settles down" and the
+// page no longer loads in new content.
+const GUIDEDTRACK_PAGE_END_EVENT = "guidedtrack:pageEnd"
+
 const container = document.getElementById("REPLACE-ME")
 const search = window.location.search
 const params = new URLSearchParams(search)
@@ -73,7 +78,7 @@ let interval = setInterval(() => {
   if (!$) return
   clearInterval(interval)
 
-  $(window).on("guidedtrack:pageEnd", () => {
+  $(window).on(GUIDEDTRACK_PAGE_END_EVENT, () => {
     canRun = true
   })
 
