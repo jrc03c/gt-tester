@@ -1,4 +1,4 @@
-const getElementContainingText = require("./get-element-containing-text.js")
+import { getElementContainingText } from "./get-element-containing-text.mjs"
 
 async function click(value, classname) {
   if (value) value = value.toString()
@@ -38,7 +38,7 @@ async function click(value, classname) {
         classname ? `with class "${classname}"` : "",
       ]
         .join(" ")
-        .trim() + "..."
+        .trim() + "...",
     )
   } else {
     console.warn(errorMessage)
@@ -46,4 +46,4 @@ async function click(value, classname) {
   }
 }
 
-module.exports = click
+export { click }

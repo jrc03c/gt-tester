@@ -18,4 +18,4 @@ function getElementContainingText(text, container) {
   return null
 }
 
-module.exports = getElementContainingText
+export { getElementContainingText }

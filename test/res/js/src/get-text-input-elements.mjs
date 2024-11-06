@@ -23,4 +23,4 @@ function getTextInputElements(container) {
   return out
 }
 
-module.exports = getTextInputElements
+export { getTextInputElements }

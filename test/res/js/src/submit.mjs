@@ -2,11 +2,11 @@ async function submit() {
   console.log("submitting responses...")
 
   let defaultButtons = Array.from(
-    document.getElementsByClassName("btn-default")
+    document.getElementsByClassName("btn-default"),
   )
 
   let primaryButtons = Array.from(
-    document.getElementsByClassName("btn-primary")
+    document.getElementsByClassName("btn-primary"),
   )
 
   if (defaultButtons.length === 0 && primaryButtons.length === 0) {
@@ -22,4 +22,4 @@ async function submit() {
   $(button).click()
 }
 
-module.exports = submit
+export { submit }

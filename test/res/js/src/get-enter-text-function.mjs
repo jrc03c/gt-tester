@@ -1,4 +1,4 @@
-const getTextInputElements = require("./get-text-input-elements.js")
+import { getTextInputElements } from "./get-text-input-elements.mjs"
 
 function getEnterTextFunction() {
   const textInputElements = getTextInputElements()
@@ -9,7 +9,7 @@ function getEnterTextFunction() {
     if (textInputElements.length === 0) {
       console.warn(
         "No text input fields were found in which to put value:",
-        textString
+        textString,
       )
 
       return
@@ -23,4 +23,4 @@ function getEnterTextFunction() {
   }
 }
 
-module.exports = getEnterTextFunction
+export { getEnterTextFunction }

@@ -1,8 +1,8 @@
-const click = require("./click.js")
-const getEnterTextFunction = require("./get-enter-text-function.js")
-const pause = require("./pause.js")
-const showAlert = require("./show-alert.js")
-const submit = require("./submit.js")
+import { click } from "./click.mjs"
+import { getEnterTextFunction } from "./get-enter-text-function.mjs"
+import { pause } from "@jrc03c/pause"
+import { showAlert } from "./show-alert.mjs"
+import { submit } from "./submit.mjs"
 
 const container = document.getElementById("REPLACE-ME")
 const search = window.location.search

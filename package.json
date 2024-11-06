@@ -1,20 +1,26 @@
 {
+  "author": "",
   "dependencies": {
+    "@jrc03c/pause": "^0.0.7",
+    "@jrc03c/vue-component-with-css": "^0.0.10",
     "dompurify": "^3.1.7",
     "vue": "^3.5.12"
   },
-  "name": "gt-tester",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "build": "esbuild test/res/js/src/main.js --bundle --outfile=test/res/js/bundle.js --minify",
-    "watch": "esbuild test/res/js/src/main.js --bundle --outfile=test/res/js/bundle.js --minify --watch"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "description": "",
   "devDependencies": {
-    "esbuild": "^0.24.0"
-  }
+    "@jrc03c/watch": "^0.0.18",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.14.0",
+    "eslint-plugin-html": "^8.1.2",
+    "prettier": "^3.3.3"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "gt-tester",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch"
+  },
+  "version": "1.0.0"
 }
