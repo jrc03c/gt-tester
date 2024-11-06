@@ -91,6 +91,15 @@ Here's a demo of `gt-tester` in action:
 
 - Add support for all possible action types (e.g., playing an audio file, playing a video file, logging in, making a purchase, etc.). I'm not sure if this is feasible for all action types — for example, logging in probably temporarily navigates away from the program to perform an OAuth login, in which case there will be no way to control what'll happen there — but I'll give it a shot anyway!
   - keywords: `audio`, `button`, `chart`, `clear`, `component`, `database`, `email`, `events`, `experiment`, `for`, `goto`, `group`, `html`, `if`, `image`, `label`, `list`, `login`, `maintain`, `navigation`, `page`, `points`, `program`, `progress`, `purchase`, `question`, `quit`, `randomize`, `repeat`, `return`, `service`, `set`, `settings`, `share`, `summary`, `switch`, `trigger`, `video`, `wait`, `while`
+    - `*question` types:
+      - calendar
+      - checkbox
+      - choice
+      - number
+      - paragraph
+      - ranking
+      - slider
+      - text
   - actions:
     - clicking on a particular element
     - typing in a particular element
