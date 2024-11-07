@@ -51,11 +51,11 @@ In the text field on the `gt-tester` home page, enter your program's ID. Then cl
 
 Here's the complete list of possible `*trigger` types. More will be added over time, so check back occasionally!
 
-- **alert** = shows an alert, pausing execution until the alert is dismissed; accepts a text value and (optionally) a "level" of importance (e.g., "info", "warning", "danger"; and the default is "info" if a value isn't provided)
 - **click** = clicks on an element; accepts a text value that the clicked element should contain and/or a class name that the clicked element should have
 - **enter-text** = enters text into the next available text field; accepts a text value
 - **pause** = pauses the automation; accepts a number of milliseconds
 - **select-slider-value** = selects a particular value along a slider input
+- **show-alert** = shows an alert, pausing execution until the alert is dismissed; accepts a text value and (optionally) a "level" of importance (e.g., "info", "warning", "danger"; and the default is "info" if a value isn't provided)
 - **submit-responses** = submits responses to the current question or page of questions
 
 For example:
@@ -65,7 +65,7 @@ For example:
 >> dataToSend["events"].add({ "type" -> "enter-text", "value" -> "Alice" })
 >> dataToSend["events"].add({ "type" -> "click", "value" -> "chocolate", "class" -> "first-answer" })
 >> dataToSend["events"].add({ "type" -> "pause", "value" -> 2000 })
->> dataToSend["events"].add({ "type" -> "alert", "value" -> "Oh, no!", "level" -> "danger" })
+>> dataToSend["events"].add({ "type" -> "show-alert", "value" -> "Oh, no!", "level" -> "danger" })
 >> dataToSend["events"].add({ "type" -> "submit-responses" })
 
 *trigger: gt-test
