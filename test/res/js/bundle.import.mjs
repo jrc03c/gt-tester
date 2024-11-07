@@ -1010,6 +1010,100 @@ var require_purify = __commonJS({
   }
 });
 
+// test/res/js/src/utils/get-element-containing-text.mjs
+function getElementContainingText(text, container2) {
+  if (typeof container2 === "undefined") {
+    container2 = document.body;
+  }
+  for (let i = 0; i < container2.children.length; i++) {
+    const child = container2.children[i];
+    if (child.textContent.includes(text)) {
+      return getElementContainingText(text, child);
+    }
+  }
+  if (container2.textContent.includes(text)) {
+    return container2;
+  }
+  return null;
+}
+
+// test/res/js/src/actions/click.mjs
+async function click(value, classname) {
+  if (value) value = value.toString();
+  let errorMessage = "No clickable elements were found";
+  if (value) errorMessage += ` containing the value "${value}"`;
+  if (classname) errorMessage += ` with class "${classname}"`;
+  errorMessage += "!";
+  let options = [];
+  if (classname) {
+    const els = Array.from(document.getElementsByClassName(classname));
+    options = options.concat(els);
+  } else if (value) {
+    const el = getElementContainingText(value);
+    if (el) options.push(el);
+  }
+  if (options.length === 0) {
+    console.warn(errorMessage);
+    return;
+  }
+  if (value) {
+    options = options.filter((el) => el.textContent.includes(value));
+  }
+  if (options.length > 0) {
+    const input = options[0];
+    $(input).trigger("click");
+    console.log(
+      [
+        "clicking on element",
+        value ? `containing value "${value}"` : "",
+        classname ? `with class "${classname}"` : ""
+      ].join(" ").trim() + "..."
+    );
+  } else {
+    console.warn(errorMessage);
+    return;
+  }
+}
+
+// test/res/js/src/utils/get-text-input-elements.mjs
+function getTextInputElements(container2) {
+  if (typeof container2 === "undefined") {
+    container2 = document.body;
+  }
+  const out = [];
+  const tagName = container2.tagName.toLowerCase();
+  if (tagName === "input" && container2.getAttribute("type") === "text") {
+    out.push(container2);
+  }
+  if (tagName === "textarea") {
+    out.push(container2);
+  }
+  for (let i = 0; i < container2.children.length; i++) {
+    const child = container2.children[i];
+    const results = getTextInputElements(child);
+    results.forEach((el) => out.push(el));
+  }
+  return out;
+}
+
+// test/res/js/src/actions/enter-text.mjs
+async function enterText(text) {
+  const textString = text.toString();
+  const textInputElements = getTextInputElements();
+  if (textInputElements.length === 0) {
+    console.warn(
+      "No text input fields were found in which to put value:",
+      textString
+    );
+    return;
+  }
+  const element = textInputElements[0];
+  textInputElements.splice(0, 1);
+  element.value = textString;
+  $(element).trigger("input");
+  console.log("entering text:", textString);
+}
+
 // node_modules/@jrc03c/pause/dist/pause.import.mjs
 function pauseAsync(ms) {
   return new Promise((resolve, reject) => {
@@ -1033,6 +1127,64 @@ if (typeof window !== "undefined") {
   window.pause = pauseAsync;
   window.pauseAsync = pauseAsync;
   window.pauseSync = pauseSync;
+}
+
+// test/res/js/src/actions/select-slider-value.mjs
+function remap(x, a, b, c, d) {
+  return c + (d - c) * (x - a) / (b - a);
+}
+async function selectSliderValue(value, selector) {
+  console.log("selecting slider value:", value);
+  selector = selector || ".slider";
+  let slider = document.querySelector(selector);
+  while (!slider) {
+    await pauseAsync(100);
+    slider = document.querySelector(selector);
+  }
+  let handle = slider.querySelector(".slider-handle");
+  while (!handle) {
+    await pauseAsync(100);
+    handle = slider.querySelector(".slider-handle");
+  }
+  let min = handle.getAttribute("aria-valuemin");
+  let max = handle.getAttribute("aria-valuemax");
+  try {
+    min = JSON.parse(min);
+  } catch (e) {
+  }
+  try {
+    max = JSON.parse(max);
+  } catch (e) {
+  }
+  const sliderRect = slider.getBoundingClientRect();
+  const x = remap(
+    value,
+    min,
+    max,
+    sliderRect.x,
+    sliderRect.x + sliderRect.width
+  );
+  const y = sliderRect.y + sliderRect.height / 2;
+  const tooltip = slider.querySelector(".tooltip");
+  const tooltipInner = tooltip.querySelector(".tooltip-inner");
+  const sliderSelection = slider.querySelector(".slider-selection");
+  const sliderTrackHigh = slider.querySelector(".slider-track-high");
+  const percent = 100 * (value - min) / (max - min);
+  handle.style.left = percent.toFixed(2) + "%";
+  tooltip.style.left = percent.toFixed(2) + "%";
+  sliderSelection.style.width = percent.toFixed(2) + "%";
+  sliderTrackHigh.width = (100 - percent).toFixed(2) + "%";
+  tooltipInner.textContent = value.toFixed(2);
+  const callback = () => {
+    try {
+      slider.dispatchEvent(
+        new MouseEvent("mousedown", { clientX: x, clientY: y })
+      );
+    } catch (e) {
+    }
+    $(window).off("before-submit-responses", callback);
+  };
+  $(window).on("before-submit-responses", callback);
 }
 
 // test/res/js/src/actions/show-alert.mjs
@@ -1252,22 +1404,87 @@ async function showAlert(message, level) {
 }
 customElements.define("x-alert", AlertComponent);
 
+// test/res/js/src/actions/submit-responses.mjs
+async function submitResponses() {
+  console.log("submitting responses...");
+  let defaultButtons = Array.from(
+    document.getElementsByClassName("btn-default")
+  );
+  let primaryButtons = Array.from(
+    document.getElementsByClassName("btn-primary")
+  );
+  if (defaultButtons.length === 0 && primaryButtons.length === 0) {
+    console.warn("No 'submit' buttons were found!");
+    return;
+  }
+  const button = defaultButtons.length > 0 ? defaultButtons[defaultButtons.length - 1] : primaryButtons[primaryButtons.length - 1];
+  $(window).trigger("before-submit-responses");
+  $(button).click();
+}
+
 // test/res/js/src/main.mjs
-console.log("showing alert...");
-showAlert(
-  `
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dictum urna eu diam maximus fermentum nec at nibh. Vivamus luctus vitae nibh ac lacinia. Sed lobortis ultrices maximus. Nulla eu ex non nunc dignissim interdum. Fusce elementum velit id diam dapibus, nec lacinia est placerat. Nunc ornare tincidunt lectus, a feugiat sapien fringilla quis. Nam porta purus purus, in consequat justo rutrum nec.</p>
-
-<p>Vivamus posuere nulla dui, sit amet euismod nunc egestas hendrerit. Donec nulla metus, vulputate nec nulla non, posuere elementum urna. Vestibulum non ipsum velit. Fusce ante dui, rutrum sit amet magna sed, consectetur dignissim est. Duis felis eros, eleifend pretium pharetra sed, dictum sed mi. Quisque porttitor consectetur lorem, euismod fermentum nulla scelerisque ac. Praesent viverra bibendum urna, non maximus purus sollicitudin nec. Sed et volutpat purus. Sed est tortor, efficitur at nulla id, blandit tristique purus. Nulla vel tincidunt sapien. Donec est lacus, sagittis nec mollis eu, feugiat quis ex. Aliquam non magna nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam diam orci, luctus nec leo nec, lobortis scelerisque metus.</p>
-
-<p>Nam non elit lectus. Duis laoreet imperdiet mauris, ac accumsan risus volutpat dictum. Vivamus consequat condimentum sodales. Aliquam volutpat est sit amet mauris posuere viverra. Nam ac dolor feugiat, sodales risus sit amet, rhoncus neque. Mauris neque diam, tristique ac tincidunt in, sagittis eget mauris. Curabitur feugiat orci non eros tempus, vitae condimentum massa consequat. Curabitur pretium nisl lacus, sit amet aliquam diam rhoncus et. Maecenas nunc ipsum, consectetur id orci eget, consequat feugiat nunc.</p>
-
-<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Quisque sed nisi lacinia, finibus libero vitae, tempus sapien. Duis vulputate ultrices aliquet. Donec mollis leo nunc, sit amet bibendum nunc tristique ut. In hac habitasse platea dictumst. Nullam nec tortor sed ex ultrices congue. Praesent et velit ut metus faucibus dapibus quis et ipsum. Vivamus pharetra ultricies semper. Quisque a nunc nec nisl mollis efficitur. Sed lobortis augue sed lacus bibendum, nec laoreet magna aliquam. Donec vitae viverra metus, a vestibulum risus. Ut nisl ipsum, egestas vel vulputate et, molestie ut risus. Curabitur sollicitudin, ipsum ut condimentum aliquam, leo libero tincidunt libero, sed hendrerit enim lacus nec leo. Cras rhoncus justo arcu, in semper neque lobortis a.</p>
-
-<p>Nulla tincidunt ex eget mi porttitor, rutrum scelerisque velit eleifend. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam tincidunt consectetur nibh, id scelerisque magna consectetur eu. Pellentesque aliquet sollicitudin velit ut molestie. Sed ac dolor ut diam sodales convallis. Aliquam at eros non tellus rutrum interdum vel a leo. Cras cursus, libero lacinia pellentesque faucibus, nunc ipsum ultrices orci, lobortis dapibus eros magna et purus. Aenean vel augue erat. Nunc nec mauris eget felis elementum rhoncus non vitae turpis.</p>  
-`,
-  "danger"
-);
+var GUIDEDTRACK_PAGE_END_EVENT = "guidedtrack:pageEnd";
+var container = document.getElementById("REPLACE-ME");
+var search = window.location.search;
+var params = new URLSearchParams(search);
+var id = params.get("id");
+var mode = params.get("mode") || "preview";
+if (!id) {
+} else {
+  container.id = id;
+  localStorage.setItem("last-id", id);
+}
+if (mode === "preview") {
+  container.setAttribute("data-mode", "test");
+  document.getElementById("mode").innerHTML = "\u{1F6A7}&nbsp; PREVIEW MODE &nbsp;\u{1F6A7}";
+  localStorage.setItem("last-mode", "preview");
+} else {
+  document.getElementById("mode").innerHTML = "\u{1F3C1}&nbsp; RUN MODE &nbsp;\u{1F3C1}";
+  localStorage.setItem("last-mode", "run");
+}
+async function run(_, data) {
+  canRun = false;
+  console.log("events:", data.events);
+  const events = data.events;
+  const timeBetweenEvents = 100;
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    if (event.type === "enter-text") {
+      await enterText(event.value);
+    } else if (event.type === "click") {
+      await click(event.value, event.class);
+    } else if (event.type === "select-slider-value") {
+      await selectSliderValue(event.value, event.selector);
+    } else if (event.type === "pause") {
+      const ms = parseInt(event.value);
+      console.log("pausing for milliseconds:", ms);
+      await pauseAsync(ms);
+    } else if (event.type === "show-alert") {
+      await showAlert(event.value, event.level);
+    } else if (event.type === "submit-responses") {
+      await submitResponses();
+    }
+    await pauseAsync(timeBetweenEvents);
+  }
+}
+var canRun = false;
+var interval = setInterval(() => {
+  if (!$) {
+    console.log("waiting for jquery to load...");
+    return;
+  }
+  clearInterval(interval);
+  console.log("jquery finished loading!");
+  $(window).on(GUIDEDTRACK_PAGE_END_EVENT, () => {
+    canRun = true;
+  });
+  $(window).on("gt-test", async (event, data) => {
+    while (!canRun) {
+      await pauseAsync(10);
+    }
+    run(event, data);
+  });
+}, 1);
 /*! Bundled license information:
 
 dompurify/dist/purify.js:
