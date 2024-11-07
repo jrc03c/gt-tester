@@ -2,9 +2,7 @@
   "author": "",
   "dependencies": {
     "@jrc03c/pause": "^0.0.7",
-    "@jrc03c/vue-component-with-css": "^0.0.10",
-    "dompurify": "^3.1.7",
-    "vue": "^3.5.12"
+    "dompurify": "^3.1.7"
   },
   "description": "",
   "devDependencies": {

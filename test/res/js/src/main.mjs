@@ -17,7 +17,7 @@ const id = params.get("id")
 const mode = params.get("mode") || "preview"
 
 if (!id) {
-  window.location.href = window.location.protocol + "//" + window.location.host
+  // window.location.href = window.location.protocol + "//" + window.location.host
 } else {
   container.id = id
   localStorage.setItem("last-id", id)
@@ -65,7 +65,7 @@ async function run(_, data) {
     }
 
     // show an alert
-    else if (event.type === "alert") {
+    else if (event.type === "show-alert") {
       await showAlert(event.value, event.level)
     }
 
