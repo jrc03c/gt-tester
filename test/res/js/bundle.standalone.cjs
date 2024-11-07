@@ -1198,18 +1198,27 @@
   .modal button {
     --border-radius: 0.5em;
     --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    --color-danger-dark: hsl(1.7deg, 63.6%, 25%);
+
+    --color-danger-dark: hsl(1.7deg, 63.6%, 15%);
     --color-danger-light: hsl(1.7deg, 63.6%, 90%);
-    --color-danger: hsl(1.7deg, 63.6%, 50%);
-    --color-info-dark: hsl(207.7deg, 72.1%, 25%);
+    --color-danger-medium: hsl(1.7deg, 63.6%, 60%);
+    --color-danger: hsl(1.7deg, 63.6%, 40%);
+
+    --color-info-dark: hsl(207.7deg, 72.1%, 15%);
     --color-info-light: hsl(207.7deg, 72.1%, 90%);
-    --color-info: hsl(207.7deg, 72.1%, 50%);
-    --color-success-dark: hsl(120deg, 50%, 25%);
+    --color-info-medium: hsl(207.7deg, 72.1%, 60%);
+    --color-info: hsl(207.7deg, 72.1%, 40%);
+
+    --color-success-dark: hsl(120deg, 50%, 15%);
     --color-success-light: hsl(120deg, 50%, 90%);
-    --color-success: hsl(120deg, 50%, 50%);
-    --color-warning-dark: hsl(35.2deg, 67.5%, 25%);
+    --color-success-medium: hsl(120deg, 50%, 60%);
+    --color-success: hsl(120deg, 50%, 40%);
+
+    --color-warning-dark: hsl(35.2deg, 67.5%, 15%);
     --color-warning-light: hsl(35.2deg, 67.5%, 90%);
-    --color-warning: hsl(35.2deg, 67.5%, 50%);
+    --color-warning-medium: hsl(35.2deg, 67.5%, 60%);
+    --color-warning: hsl(35.2deg, 67.5%, 40%);
+
     --padding: 1.5em;
     font-family: system-ui, sans-serif;
     font-weight: normal;
@@ -1289,7 +1298,8 @@
 
   button {
     font-size: 1em;
-    padding: var(--border-radius);
+    font-weight: bold !important;
+    padding: calc(var(--padding) / 2);
     background-color: rgb(235, 235, 235);
     border: 0;
     border-radius: var(--border-radius);
@@ -1306,23 +1316,23 @@
   }
 
   button.btn-info {
-    background-color: var(--color-info);
-    color: white;
+    background-color: var(--color-info-medium);
+    color: var(--color-info-dark);
   }
 
   button.btn-success {
-    background-color: var(--color-success);
-    color: white;
+    background-color: var(--color-success-medium);
+    color: var(--color-success-dark);
   }
 
   button.btn-warning {
-    background-color: var(--color-warning);
-    color: white;
+    background-color: var(--color-warning-medium);
+    color: var(--color-warning-dark);
   }
 
   button.btn-danger {
-    background-color: var(--color-danger);
-    color: white;
+    background-color: var(--color-danger-medium);
+    color: var(--color-danger-dark);
   }
 
   @media (max-width: 768px) {
