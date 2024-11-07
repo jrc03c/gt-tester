@@ -65,6 +65,7 @@ const css = /* css */ `
     justify-content: center;
     align-content: center;
     align-items: center;
+    pointer-events: none;
   }
 
   .modal-content {
@@ -76,6 +77,7 @@ const css = /* css */ `
     overflow-y: auto;
     background-color: white;
     box-shadow: var(--box-shadow);
+    pointer-events: all;
   }
 
   .modal.alert-level-info .modal-content {
@@ -197,6 +199,8 @@ class AlertComponent extends HTMLElement {
   constructor(message, level) {
     super()
 
+    document.body.appendChild(this)
+
     this.level = level || "info"
 
     const cleanedMessage = sanitize(message)
@@ -224,11 +228,41 @@ class AlertComponent extends HTMLElement {
     const button = root.querySelector(".btn")
     button.classList.add("btn-" + this.level)
 
-    const callback = () => this.parentElement.removeChild(this)
-    button.addEventListener("click", callback)
-    this._eventListeners.push({ target: button, event: "click", callback })
+    // button listener
+    const buttonCallback = () => this.parentElement.removeChild(this)
+    button.addEventListener("click", buttonCallback)
 
-    document.body.appendChild(this)
+    this._eventListeners.push({
+      target: button,
+      event: "click",
+      callback: buttonCallback,
+    })
+
+    // backdrop listener
+    const backdrop = root.querySelector(".modal-backdrop")
+    const backdropCallback = () => this.parentElement.removeChild(this)
+    backdrop.addEventListener("click", backdropCallback)
+
+    this._eventListeners.push({
+      target: backdrop,
+      event: "click",
+      callback: backdropCallback,
+    })
+
+    // escape key listener
+    const escapeKeyCallback = event => {
+      if (event.key === "Escape") {
+        this.parentElement.removeChild(this)
+      }
+    }
+
+    window.addEventListener("keydown", escapeKeyCallback)
+
+    this._eventListeners.push({
+      target: window,
+      event: "keydown",
+      callback: escapeKeyCallback,
+    })
   }
 
   disconnectedCallback() {

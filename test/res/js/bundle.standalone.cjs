@@ -1255,6 +1255,7 @@
     justify-content: center;
     align-content: center;
     align-items: center;
+    pointer-events: none;
   }
 
   .modal-content {
@@ -1266,6 +1267,7 @@
     overflow-y: auto;
     background-color: white;
     box-shadow: var(--box-shadow);
+    pointer-events: all;
   }
 
   .modal.alert-level-info .modal-content {
@@ -1377,6 +1379,7 @@
     _eventListeners = [];
     constructor(message, level) {
       super();
+      document.body.appendChild(this);
       this.level = level || "info";
       const cleanedMessage = (0, import_dompurify.sanitize)(message);
       this.message = cleanedMessage;
@@ -1396,10 +1399,32 @@
       messageContainer.innerHTML = cleanedMessage;
       const button = root.querySelector(".btn");
       button.classList.add("btn-" + this.level);
-      const callback = () => this.parentElement.removeChild(this);
-      button.addEventListener("click", callback);
-      this._eventListeners.push({ target: button, event: "click", callback });
-      document.body.appendChild(this);
+      const buttonCallback = () => this.parentElement.removeChild(this);
+      button.addEventListener("click", buttonCallback);
+      this._eventListeners.push({
+        target: button,
+        event: "click",
+        callback: buttonCallback
+      });
+      const backdrop = root.querySelector(".modal-backdrop");
+      const backdropCallback = () => this.parentElement.removeChild(this);
+      backdrop.addEventListener("click", backdropCallback);
+      this._eventListeners.push({
+        target: backdrop,
+        event: "click",
+        callback: backdropCallback
+      });
+      const escapeKeyCallback = (event) => {
+        if (event.key === "Escape") {
+          this.parentElement.removeChild(this);
+        }
+      };
+      window.addEventListener("keydown", escapeKeyCallback);
+      this._eventListeners.push({
+        target: window,
+        event: "keydown",
+        callback: escapeKeyCallback
+      });
     }
     disconnectedCallback() {
       this._eventListeners.forEach((listener) => {
