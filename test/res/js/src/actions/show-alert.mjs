@@ -6,30 +6,6 @@ const css = /* css */ `
   .modal,
   .modal *,
   .modal button {
-    --border-radius: 0.5em;
-    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-
-    --color-danger-dark: hsl(1.7deg, 63.6%, 15%);
-    --color-danger-light: hsl(1.7deg, 63.6%, 90%);
-    --color-danger-medium: hsl(1.7deg, 63.6%, 60%);
-    --color-danger: hsl(1.7deg, 63.6%, 40%);
-
-    --color-info-dark: hsl(207.7deg, 72.1%, 15%);
-    --color-info-light: hsl(207.7deg, 72.1%, 90%);
-    --color-info-medium: hsl(207.7deg, 72.1%, 60%);
-    --color-info: hsl(207.7deg, 72.1%, 40%);
-
-    --color-success-dark: hsl(120deg, 50%, 15%);
-    --color-success-light: hsl(120deg, 50%, 90%);
-    --color-success-medium: hsl(120deg, 50%, 60%);
-    --color-success: hsl(120deg, 50%, 40%);
-
-    --color-warning-dark: hsl(35.2deg, 67.5%, 15%);
-    --color-warning-light: hsl(35.2deg, 67.5%, 90%);
-    --color-warning-medium: hsl(35.2deg, 67.5%, 60%);
-    --color-warning: hsl(35.2deg, 67.5%, 40%);
-
-    --padding: 1.5em;
     font-family: system-ui, sans-serif;
     font-weight: normal;
   }
@@ -120,11 +96,11 @@ const css = /* css */ `
   }
 
   button:hover {
-    filter: brightness(102.5%);
+    filter: var(--button-hover-filter);
   }
 
   button:active {
-    filter: brightness(90%);
+    filter: var(--button-active-filter);
   }
 
   button.btn-info {
@@ -174,7 +150,7 @@ const template = /* html */ `
     <div class="modal-body">
       <div class="modal-content">
         <div class="modal-message">
-          {{ cleanedMessage }}
+          <!-- {{ cleanedMessage }} -->
         </div>
         
         <div class="modal-buttons">
@@ -191,85 +167,42 @@ const template = /* html */ `
 // <script>
 // -----------------------------------------------------------------------------
 
+import { BaseComponent } from "@jrc03c/base-web-component"
 import { sanitize } from "dompurify"
 
-class AlertComponent extends HTMLElement {
-  _eventListeners = []
+class AlertComponent extends BaseComponent {
+  static css = BaseComponent.css + css
+  static template = template
 
-  constructor(message, level) {
-    super()
+  constructor(options) {
+    super(options)
+    options = options || {}
+    this.level = options.level || "info"
 
-    document.body.appendChild(this)
+    this.message = sanitize(
+      options.message ||
+        "[There should be a message here instead of this text!]",
+    )
 
-    this.level = level || "info"
+    console.log("showing alert:", this.message, this.level)
 
-    const cleanedMessage = sanitize(message)
-    this.message = cleanedMessage
-    console.log("showing alert:", cleanedMessage, level)
-
-    const temp = document.createElement("template")
-
-    temp.innerHTML = `
-      <style>${css}</style>
-      ${template}
-    `
-
-    const deep = true
-    const clone = document.importNode(temp.content, deep)
-    const shadow = this.attachShadow({ mode: "open" })
-    shadow.appendChild(clone)
-
-    const root = shadow.querySelector(".modal")
+    const root = this.shadowRoot.querySelector(".modal")
     root.classList.add("alert-level-" + this.level)
 
     const messageContainer = root.querySelector(".modal-message")
-    messageContainer.innerHTML = cleanedMessage
+    messageContainer.innerHTML = this.message
 
     const button = root.querySelector(".btn")
     button.classList.add("btn-" + this.level)
+    this.on(button, "click", () => this.parentElement.removeChild(this))
 
-    // button listener
-    const buttonCallback = () => this.parentElement.removeChild(this)
-    button.addEventListener("click", buttonCallback)
-
-    this._eventListeners.push({
-      target: button,
-      event: "click",
-      callback: buttonCallback,
-    })
-
-    // backdrop listener
     const backdrop = root.querySelector(".modal-backdrop")
-    const backdropCallback = () => this.parentElement.removeChild(this)
-    backdrop.addEventListener("click", backdropCallback)
+    this.on(backdrop, "click", () => this.parentElement.removeChild(this))
 
-    this._eventListeners.push({
-      target: backdrop,
-      event: "click",
-      callback: backdropCallback,
-    })
-
-    // escape key listener
-    const escapeKeyCallback = event => {
+    this.on(window, "keydown", event => {
       if (event.key === "Escape") {
         this.parentElement.removeChild(this)
       }
-    }
-
-    window.addEventListener("keydown", escapeKeyCallback)
-
-    this._eventListeners.push({
-      target: window,
-      event: "keydown",
-      callback: escapeKeyCallback,
-    })
-  }
-
-  disconnectedCallback() {
-    this._eventListeners.forEach(listener => {
-      try {
-        listener.target.removeEventListener(listener.event, listener.callback)
-      } catch (e) {}
     })
   }
 }

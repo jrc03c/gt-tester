@@ -1,102 +1,105 @@
-import { click } from "./actions/click.mjs"
-import { enterText } from "./actions/enter-text.mjs"
-import { pause } from "@jrc03c/pause"
-import { selectSliderValue } from "./actions/select-slider-value.mjs"
-import { showAlert } from "./actions/show-alert.mjs"
-import { submitResponses } from "./actions/submit-responses.mjs"
+import { ControlsComponent } from "./controls.mjs"
+new ControlsComponent({ el: "#app" })
 
-// NOTE: This event is unofficial and may change! It may be better in the long
-// run to watch for the point in time where everything "settles down" and the
-// page no longer loads in new content.
-const GUIDEDTRACK_PAGE_END_EVENT = "guidedtrack:pageEnd"
+// import { click } from "./actions/click.mjs"
+// import { enterText } from "./actions/enter-text.mjs"
+// import { pause } from "@jrc03c/pause"
+// import { selectSliderValue } from "./actions/select-slider-value.mjs"
+// import { showAlert } from "./actions/show-alert.mjs"
+// import { submitResponses } from "./actions/submit-responses.mjs"
 
-const container = document.getElementById("REPLACE-ME")
-const search = window.location.search
-const params = new URLSearchParams(search)
-const id = params.get("id")
-const mode = params.get("mode") || "preview"
+// // NOTE: This event is unofficial and may change! It may be better in the long
+// // run to watch for the point in time where everything "settles down" and the
+// // page no longer loads in new content.
+// const GUIDEDTRACK_PAGE_END_EVENT = "guidedtrack:pageEnd"
 
-if (!id) {
-  window.location.href = window.location.protocol + "//" + window.location.host
-} else {
-  container.id = id
-  localStorage.setItem("last-id", id)
-}
+// const container = document.getElementById("REPLACE-ME")
+// const search = window.location.search
+// const params = new URLSearchParams(search)
+// const id = params.get("id")
+// const mode = params.get("mode") || "preview"
 
-if (mode === "preview") {
-  container.setAttribute("data-mode", "test")
-  document.getElementById("mode").innerHTML = "🚧&nbsp; PREVIEW MODE &nbsp;🚧"
-  localStorage.setItem("last-mode", "preview")
-} else {
-  document.getElementById("mode").innerHTML = "🏁&nbsp; RUN MODE &nbsp;🏁"
-  localStorage.setItem("last-mode", "run")
-}
+// if (!id) {
+//   window.location.href = window.location.protocol + "//" + window.location.host
+// } else {
+//   container.id = id
+//   localStorage.setItem("last-id", id)
+// }
 
-async function run(_, data) {
-  canRun = false
+// if (mode === "preview") {
+//   container.setAttribute("data-mode", "test")
+//   document.getElementById("mode").innerHTML = "🚧&nbsp; PREVIEW MODE &nbsp;🚧"
+//   localStorage.setItem("last-mode", "preview")
+// } else {
+//   document.getElementById("mode").innerHTML = "🏁&nbsp; RUN MODE &nbsp;🏁"
+//   localStorage.setItem("last-mode", "run")
+// }
 
-  const events = data.events
-  const timeBetweenEvents = 100
+// async function run(_, data) {
+//   canRun = false
 
-  for (let i = 0; i < events.length; i++) {
-    const event = events[i]
+//   const events = data.events
+//   const timeBetweenEvents = 100
 
-    // enter text
-    if (event.type === "enter-text") {
-      await enterText(event.value)
-    }
+//   for (let i = 0; i < events.length; i++) {
+//     const event = events[i]
 
-    // click something
-    else if (event.type === "click") {
-      await click(event.value, event.class)
-    }
+//     // enter text
+//     if (event.type === "enter-text") {
+//       await enterText(event.value)
+//     }
 
-    // select a slider value
-    else if (event.type === "select-slider-value") {
-      await selectSliderValue(event.value, event.selector)
-    }
+//     // click something
+//     else if (event.type === "click") {
+//       await click(event.value, event.class)
+//     }
 
-    // pause temporarily
-    else if (event.type === "pause") {
-      const ms = parseInt(event.value)
-      console.log("pausing for milliseconds:", ms)
-      await pause(ms)
-    }
+//     // select a slider value
+//     else if (event.type === "select-slider-value") {
+//       await selectSliderValue(event.value, event.selector)
+//     }
 
-    // show an alert
-    else if (event.type === "show-alert") {
-      await showAlert(event.value, event.level)
-    }
+//     // pause temporarily
+//     else if (event.type === "pause") {
+//       const ms = parseInt(event.value)
+//       console.log("pausing for milliseconds:", ms)
+//       await pause(ms)
+//     }
 
-    // submit responses
-    else if (event.type === "submit-responses") {
-      await submitResponses()
-    }
+//     // show an alert
+//     else if (event.type === "show-alert") {
+//       await showAlert(event.value, event.level)
+//     }
 
-    await pause(timeBetweenEvents)
-  }
-}
+//     // submit responses
+//     else if (event.type === "submit-responses") {
+//       await submitResponses()
+//     }
 
-let canRun = false
+//     await pause(timeBetweenEvents)
+//   }
+// }
 
-let interval = setInterval(() => {
-  if (!$) {
-    console.log("waiting for jquery to load...")
-    return
-  }
+// let canRun = false
 
-  clearInterval(interval)
-  console.log("jquery finished loading!")
+// let interval = setInterval(() => {
+//   if (!$) {
+//     console.log("waiting for jquery to load...")
+//     return
+//   }
 
-  $(window).on(GUIDEDTRACK_PAGE_END_EVENT, () => {
-    canRun = true
-  })
+//   clearInterval(interval)
+//   console.log("jquery finished loading!")
 
-  $(window).on("gt-test", async (event, data) => {
-    while (!canRun) {
-      await pause(10)
-    }
+//   $(window).on(GUIDEDTRACK_PAGE_END_EVENT, () => {
+//     canRun = true
+//   })
 
-    run(event, data)
-  })
-}, 1)
+//   $(window).on("gt-test", async (event, data) => {
+//     while (!canRun) {
+//       await pause(10)
+//     }
+
+//     run(event, data)
+//   })
+// }, 1)

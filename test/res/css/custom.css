@@ -1,3 +1,35 @@
+:root {
+  --border-radius: 0.5em;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --button-active-filter: brightness(90%);
+  --button-hover-filter: brightness(102.5%);
+  --color-danger-dark: hsl(1.7deg, 63.6%, 15%);
+  --color-danger-light: hsl(1.7deg, 63.6%, 90%);
+  --color-danger-medium: hsl(1.7deg, 63.6%, 60%);
+  --color-danger: hsl(1.7deg, 63.6%, 40%);
+  --color-grey-dark: hsl(0deg, 0%, 15%);
+  --color-grey-light: hsl(0deg, 0%, 90%);
+  --color-grey-medium: hsl(0deg, 0%, 60%);
+  --color-grey: hsl(0deg, 0%, 40%);
+  --color-info-dark: hsl(207.7deg, 72.1%, 15%);
+  --color-info-light: hsl(207.7deg, 72.1%, 90%);
+  --color-info-medium: hsl(207.7deg, 72.1%, 60%);
+  --color-info: hsl(207.7deg, 72.1%, 40%);
+  --color-primary-dark: hsl(176.4deg, 80.4%, 15%);
+  --color-primary-light: hsl(176.4deg, 80.4%, 90%);
+  --color-primary-medium: hsl(176.4deg, 80.4%, 60%);
+  --color-primary: hsl(176.4deg, 80.4%, 40%);
+  --color-success-dark: hsl(120deg, 50%, 15%);
+  --color-success-light: hsl(120deg, 50%, 90%);
+  --color-success-medium: hsl(120deg, 50%, 60%);
+  --color-success: hsl(120deg, 50%, 40%);
+  --color-warning-dark: hsl(35.2deg, 67.5%, 15%);
+  --color-warning-light: hsl(35.2deg, 67.5%, 90%);
+  --color-warning-medium: hsl(35.2deg, 67.5%, 60%);
+  --color-warning: hsl(35.2deg, 67.5%, 40%);
+  --padding: 1.5em;
+}
+
 .top-bar {
   display: flex;
   flex-direction: row;
