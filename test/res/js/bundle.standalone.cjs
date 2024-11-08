@@ -1466,6 +1466,7 @@
   var id = params.get("id");
   var mode = params.get("mode") || "preview";
   if (!id) {
+    window.location.href = window.location.protocol + "//" + window.location.host;
   } else {
     container.id = id;
     localStorage.setItem("last-id", id);
@@ -1480,7 +1481,6 @@
   }
   async function run(_, data) {
     canRun = false;
-    console.log("events:", data.events);
     const events = data.events;
     const timeBetweenEvents = 100;
     for (let i = 0; i < events.length; i++) {
