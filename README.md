@@ -1,6 +1,6 @@
 # GuidedTrack Feedback Harness
 
-Embed a GuidedTrack program, screenshot it, draw on the screenshot, type feedback, and send it to the developer. This version (Phase 1) saves each piece of feedback to the reviewer's computer as a PNG and a JSON file. Later phases store feedback in Supabase, add a developer inbox, and record sessions for replay.
+Embed a GuidedTrack program, screenshot it, draw on the screenshot, type feedback, and send it to the developer. This version (Phase 1) saves each piece of feedback to the reviewer's computer as a single HTML file. Later phases store feedback in Supabase, add a developer inbox, and record sessions for replay.
 
 ## Using it
 
@@ -8,7 +8,7 @@ Embed a GuidedTrack program, screenshot it, draw on the screenshot, type feedbac
 
 2. Open the harness, enter the program key, choose **Test** or **Run**, and click **Open**. Or go straight to `?key=<key>&mode=test`.
 
-3. Click **Give feedback** at any point. Draw with the pen or highlighter, add notes that point at parts of the page, type in the box, and click **Send feedback**. Two files download: the annotated PNG and a JSON sidecar with the text, the annotations, and the program lines that were on screen.
+3. Click **Give feedback** at any point. Draw with the pen or highlighter, add notes that point at parts of the page, type in the box, and click **Send feedback**. One HTML file downloads. Open it in any browser to see the annotated screenshot, the typed feedback, the program lines that were on screen, and the program's variables. To keep the PNG on its own, right-click the screenshot in that file and save it. The file also embeds the full feedback record as JSON (in the `feedback-sidecar` script element) for tools to read.
 
 "Reset everything" in GuidedTrack's menu works because the harness keeps all its state in the query string.
 

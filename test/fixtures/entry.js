@@ -6,6 +6,7 @@ import { mountProgram, createEmitter } from "../../src/gt-embed.js"
 import { createControls } from "../../src/controls.js"
 import { openFeedbackModal } from "../../src/feedback-modal.js"
 import { mountReviewer } from "../../src/screens/reviewer.js"
+import { downloadFeedback } from "../../src/send-local.js"
 import { pixelAt } from "./pixel.js"
 
 window.harness = {
@@ -19,5 +20,6 @@ window.harness = {
   createControls,
   openFeedbackModal,
   mountReviewer,
+  downloadFeedback,
   pixelAt,
 }
