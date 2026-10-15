@@ -1,3 +1,5 @@
 import "../../src/styles.css"
 
-window.harness = {}
+window.harness = {
+  version: "phase-1",
+}
