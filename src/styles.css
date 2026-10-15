@@ -67,3 +67,199 @@ body {
   cursor: text;
   line-height: 18px;
 }
+
+/* Floating controls */
+.harness-controls {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  font-family: system-ui, sans-serif;
+}
+
+.harness-feedback-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--harness-accent);
+  color: #fff;
+  font:
+    600 15px system-ui,
+    sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.harness-feedback-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.harness-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: #555;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.harness-name input {
+  font:
+    14px system-ui,
+    sans-serif;
+  padding: 4px 6px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  width: 160px;
+}
+
+/* Feedback modal */
+.harness-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+.harness-modal-dialog {
+  background: #fff;
+  color: var(--harness-text);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.harness-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.harness-toolbar-spacer {
+  flex: 1;
+}
+
+.harness-toolbar button,
+.harness-actions button {
+  font:
+    14px system-ui,
+    sans-serif;
+  padding: 6px 12px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background: #f6f6f6;
+  color: var(--harness-text);
+  cursor: pointer;
+}
+
+.harness-toolbar button[aria-pressed="true"],
+.harness-primary {
+  background: var(--harness-accent);
+  border-color: var(--harness-accent);
+  color: #fff;
+}
+
+.harness-actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.harness-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #555;
+  min-height: 1.2em;
+}
+
+.harness-editor {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #eee;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.harness-editor .harness-annotator {
+  max-width: 100%;
+}
+
+.harness-text {
+  font:
+    14px system-ui,
+    sans-serif;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+.harness-error {
+  margin: 0;
+  color: var(--harness-danger);
+  font-size: 13px;
+}
+
+.harness-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .harness-feedback-label,
+  .harness-name span {
+    display: none;
+  }
+
+  .harness-feedback-button {
+    padding: 12px;
+  }
+
+  .harness-name input {
+    width: 110px;
+  }
+
+  .harness-modal {
+    padding: 0;
+  }
+
+  .harness-modal-dialog {
+    border-radius: 0;
+    max-height: 100vh;
+  }
+
+  .harness-text {
+    height: 2.4em;
+  }
+
+  .harness-text:focus {
+    height: 6em;
+  }
+}

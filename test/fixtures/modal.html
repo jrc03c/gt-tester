@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/test/fixtures/build/entry.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import "/test/fixtures/build/entry.js"
+
+      const canvas = document.createElement("canvas")
+      canvas.width = 400
+      canvas.height = 300
+      canvas.getContext("2d").fillRect(0, 0, 400, 300)
+      window.image = { url: canvas.toDataURL(), width: 400, height: 300 }
+
+      window.sent = []
+      window.cancelled = 0
+      window.failNext = false
+      window.openModal = () => {
+        window.modal = window.harness.openFeedbackModal({
+          image: window.image,
+          onSend: async payload => {
+            window.sent.push(payload)
+            if (window.failNext) {
+              window.failNext = false
+              throw new Error("network down")
+            }
+          },
+          onCancel: () => window.cancelled++,
+        })
+      }
+
+      window.clicks = 0
+      window.names = []
+      window.fixtureReady = true
+    </script>
+  </body>
+</html>
