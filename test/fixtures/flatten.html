@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/test/fixtures/build/entry.css" />
+  </head>
+  <body>
+    <script type="module">
+      import "/test/fixtures/build/entry.js"
+
+      const canvas = document.createElement("canvas")
+      canvas.width = 400
+      canvas.height = 300
+      const context = canvas.getContext("2d")
+      context.fillStyle = "#dddddd"
+      context.fillRect(0, 0, 400, 300)
+      window.imageUrl = canvas.toDataURL()
+      window.fixtureReady = true
+    </script>
+  </body>
+</html>
