@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/test/fixtures/build/entry.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      import "/test/fixtures/build/entry.js"
+
+      window.sent = []
+      window.mount = (key, mode, assetBase = "/test/fixtures/gt-stub") =>
+        window.harness.mountReviewer({
+          root: document.getElementById("app"),
+          route: { screen: "reviewer", key, mode },
+          assetBase,
+          sendFeedback: async item => {
+            window.sent.push({
+              key: item.key,
+              mode: item.mode,
+              text: item.text,
+              annotations: item.annotations,
+              context: item.context,
+              reviewerName: item.reviewerName,
+              imageWidth: item.image.width,
+              imageHeight: item.image.height,
+              imageType: item.image.blob && item.image.blob.type,
+            })
+          },
+        })
+      window.fixtureReady = true
+    </script>
+  </body>
+</html>

@@ -5,6 +5,7 @@ import { captureViewport } from "../../src/capture.js"
 import { mountProgram, createEmitter } from "../../src/gt-embed.js"
 import { createControls } from "../../src/controls.js"
 import { openFeedbackModal } from "../../src/feedback-modal.js"
+import { mountReviewer } from "../../src/screens/reviewer.js"
 import { pixelAt } from "./pixel.js"
 
 window.harness = {
@@ -17,5 +18,6 @@ window.harness = {
   createEmitter,
   createControls,
   openFeedbackModal,
+  mountReviewer,
   pixelAt,
 }
