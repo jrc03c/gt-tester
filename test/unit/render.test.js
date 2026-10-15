@@ -1,0 +1,119 @@
+import { test } from "node:test"
+import assert from "node:assert/strict"
+import {
+  renderTree,
+  toSvgString,
+  wrapText,
+  h,
+} from "../../src/annotations/render.js"
+
+const image = { width: 400, height: 300 }
+const pen = {
+  id: "p1",
+  type: "pen",
+  points: [
+    [0, 0],
+    [10, 10],
+  ],
+}
+const highlight = {
+  id: "h1",
+  type: "highlight",
+  points: [
+    [5, 5],
+    [50, 5],
+  ],
+}
+const callout = {
+  id: "c1",
+  type: "callout",
+  anchor: [0, 50],
+  box: { x: 10, y: 40, w: 100, h: 40 },
+  text: "hello world foo",
+}
+
+test("root svg has xmlns, viewBox and size", () => {
+  const svg = toSvgString(renderTree([], image))
+  assert.ok(
+    svg.startsWith(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" data-mode="static">',
+    ),
+  )
+  assert.ok(svg.includes('<marker id="harness-arrow"'))
+})
+
+test("static pen stroke is a single styled path", () => {
+  const svg = toSvgString(renderTree([pen], image))
+  assert.ok(svg.includes('<g data-id="p1" data-type="pen">'))
+  assert.ok(svg.includes('d="M 0 0 L 10 10"'))
+  assert.ok(svg.includes('stroke="#e53935"'))
+  assert.ok(svg.includes('stroke-width="4"'))
+  assert.ok(!svg.includes('data-role="shape"'), "static mode has no hit path")
+})
+
+test("live pen stroke adds a wide transparent hit path", () => {
+  const svg = toSvgString(renderTree([pen], image, { mode: "live" }))
+  assert.ok(svg.includes('stroke="transparent" stroke-width="16"'))
+  assert.ok(svg.includes('data-role="shape"'))
+})
+
+test("highlight is translucent and multiplies", () => {
+  const svg = toSvgString(renderTree([highlight], image))
+  assert.ok(svg.includes('stroke="#ffeb3b"'))
+  assert.ok(svg.includes('stroke-opacity="0.4"'))
+  assert.ok(svg.includes("mix-blend-mode: multiply"))
+})
+
+test("static callout renders connector, anchor, box and wrapped text", () => {
+  const svg = toSvgString(renderTree([callout], image))
+  assert.ok(svg.includes('<line x1="10" y1="50" x2="0" y2="50"'))
+  assert.ok(svg.includes('marker-end="url(#harness-arrow)"'))
+  assert.ok(svg.includes('<circle cx="0" cy="50" r="6"'))
+  assert.ok(svg.includes('<rect x="10" y="40" width="100" height="40"'))
+  assert.ok(svg.includes("<text "))
+  assert.ok(svg.includes("<tspan"))
+  assert.ok(!svg.includes("foreignObject"))
+})
+
+test("live callout renders an editable div and a resize handle", () => {
+  const svg = toSvgString(renderTree([callout], image, { mode: "live" }))
+  assert.ok(svg.includes("<foreignObject"))
+  assert.ok(svg.includes('contenteditable="true"'))
+  assert.ok(svg.includes('data-role="text"'))
+  assert.ok(svg.includes('data-role="resize"'))
+  assert.ok(svg.includes('data-role="anchor"'))
+  assert.ok(svg.includes('data-role="box"'))
+})
+
+test("selected shape gets a selection outline and draft is drawn", () => {
+  const svg = toSvgString(
+    renderTree([pen], image, {
+      mode: "live",
+      selectedId: "p1",
+      draft: highlight,
+    }),
+  )
+  assert.ok(svg.includes('data-role="selection"'))
+  assert.ok(svg.includes('data-id="h1"'))
+})
+
+test("text content is escaped", () => {
+  const svg = toSvgString(renderTree([{ ...callout, text: "<b>&" }], image))
+  assert.ok(svg.includes("&lt;b&gt;&amp;"))
+  assert.ok(!svg.includes("<b>"))
+})
+
+test("wrapText wraps greedily by estimated character width", () => {
+  assert.deepEqual(wrapText("hello world foo", 60), ["hello", "world", "foo"])
+  assert.deepEqual(wrapText("", 60), [""])
+  assert.deepEqual(wrapText("a\nb", 60), ["a", "b"])
+  assert.deepEqual(wrapText("abcdefghijkl", 60), ["abcdefg", "hijkl"])
+})
+
+test("h builds a tree node", () => {
+  assert.deepEqual(h("g", { id: "x" }, ["t"]), {
+    tag: "g",
+    attrs: { id: "x" },
+    children: ["t"],
+  })
+})
