@@ -9,11 +9,14 @@
     <script type="module">
       import "/test/fixtures/build/entry.js"
 
-      const canvas = document.createElement("canvas")
-      canvas.width = 400
-      canvas.height = 300
-      canvas.getContext("2d").fillRect(0, 0, 400, 300)
-      window.image = { url: canvas.toDataURL(), width: 400, height: 300 }
+      window.makeImage = (width, height) => {
+        const canvas = document.createElement("canvas")
+        canvas.width = width
+        canvas.height = height
+        canvas.getContext("2d").fillRect(0, 0, width, height)
+        return { url: canvas.toDataURL(), width, height }
+      }
+      window.image = window.makeImage(400, 300)
 
       window.sent = []
       window.cancelled = 0

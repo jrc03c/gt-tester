@@ -214,3 +214,20 @@ test("moving a stroke stops at the image edge", async () => {
     ])
   })
 })
+
+test("pointer positions scale to image pixels when the image is shrunk", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await page.goto(`${baseUrl}/test/fixtures/editor.html?scale=half`)
+    await page.waitForFunction(() => window.editorReady === true)
+    const box = await page.locator("#editor img").boundingBox()
+    assert.equal(Math.round(box.width), 200)
+    assert.equal(Math.round(box.height), 150)
+    await setTool(page, "pen")
+    await drag(page, [25, 25], [75, 25])
+    const [stroke] = await annotations(page)
+    assert.deepEqual(rounded(stroke.points), [
+      [50, 50],
+      [150, 50],
+    ])
+  })
+})

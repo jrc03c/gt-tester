@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { withPage } from "../helpers/browser.js"
+import { withPage, drag } from "../helpers/browser.js"
 
 async function open(page, baseUrl) {
   await page.goto(`${baseUrl}/test/fixtures/modal.html`)
@@ -149,4 +149,80 @@ test("controls render the feedback button and the name field", async () => {
       1,
     )
   })
+})
+
+test("a tall phone screenshot fits the modal without scrolling", async () => {
+  await withPage(
+    async ({ page, baseUrl }) => {
+      await page.goto(`${baseUrl}/test/fixtures/modal.html`)
+      await page.waitForFunction(() => window.fixtureReady === true)
+      await page.evaluate(() => {
+        window.image = window.makeImage(780, 1688)
+        window.openModal()
+      })
+      await page.waitForSelector(".harness-modal")
+      await page.waitForFunction(() => {
+        const img = document.querySelector(".harness-annotator img")
+        return img && img.complete && img.naturalWidth > 0
+      })
+
+      const sizes = await page.evaluate(() => {
+        const editor = document.querySelector(".harness-editor")
+        const img = document.querySelector(".harness-annotator img")
+        const svg = document.querySelector(".harness-annotator-svg")
+        const imgRect = img.getBoundingClientRect()
+        const svgRect = svg.getBoundingClientRect()
+        return {
+          scrollHeight: editor.scrollHeight,
+          clientHeight: editor.clientHeight,
+          scrollWidth: editor.scrollWidth,
+          clientWidth: editor.clientWidth,
+          img: [imgRect.width, imgRect.height],
+          svg: [svgRect.width, svgRect.height],
+          natural: [img.naturalWidth, img.naturalHeight],
+        }
+      })
+
+      assert.ok(sizes.scrollHeight <= sizes.clientHeight, JSON.stringify(sizes))
+      assert.ok(sizes.scrollWidth <= sizes.clientWidth, JSON.stringify(sizes))
+      assert.ok(sizes.img[0] < sizes.natural[0], JSON.stringify(sizes))
+      assert.ok(sizes.img[1] < sizes.natural[1], JSON.stringify(sizes))
+      assert.ok(
+        Math.abs(sizes.svg[0] - sizes.img[0]) < 1,
+        JSON.stringify(sizes),
+      )
+      assert.ok(
+        Math.abs(sizes.svg[1] - sizes.img[1]) < 1,
+        JSON.stringify(sizes),
+      )
+    },
+    { viewport: { width: 390, height: 844 } },
+  )
+})
+
+test("drawing in a wide modal maps to image pixels", async () => {
+  await withPage(
+    async ({ page, baseUrl }) => {
+      await open(page, baseUrl)
+      const box = await page.locator(".harness-annotator img").boundingBox()
+      // The 400x300 image is narrower than the editor, so it is centred.
+      await drag(
+        page,
+        [box.x + box.width * 0.25, box.y + box.height * 0.5],
+        [box.x + box.width * 0.75, box.y + box.height * 0.5],
+      )
+      const [stroke] = await page.evaluate(() =>
+        window.modal.editor.getAnnotations(),
+      )
+      const points = stroke.points.map(([x, y]) => [
+        Math.round(x),
+        Math.round(y),
+      ])
+      assert.deepEqual(points, [
+        [100, 150],
+        [300, 150],
+      ])
+    },
+    { viewport: { width: 1280, height: 900 } },
+  )
 })

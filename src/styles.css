@@ -144,7 +144,7 @@ body {
   border-radius: 8px;
   width: 100%;
   max-width: 1100px;
-  max-height: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -195,6 +195,10 @@ body {
   min-height: 1.2em;
 }
 
+/* The dialog has a definite height so the editor's flexed height is definite;
+   size containment then lets the screenshot fit both dimensions via cq units,
+   and the inline-block annotator shrinks to the image so the SVG overlay
+   (absolutely positioned over it) stays aligned with the pixels. */
 .harness-editor {
   flex: 1;
   min-height: 0;
@@ -203,11 +207,21 @@ body {
   border-radius: 4px;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  container-type: size;
 }
 
-.harness-editor .harness-annotator {
+.harness-editor > .harness-annotator {
   max-width: 100%;
+  max-height: 100%;
+}
+
+.harness-editor .harness-annotator img {
+  max-width: 100cqw;
+  max-height: 100cqh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .harness-text {
@@ -261,7 +275,7 @@ body {
 
   .harness-modal-dialog {
     border-radius: 0;
-    max-height: 100vh;
+    height: 100%;
   }
 
   .harness-text {

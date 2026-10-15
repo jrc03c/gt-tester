@@ -17,6 +17,10 @@
     <script type="module">
       import "/test/fixtures/build/entry.js"
 
+      if (new URLSearchParams(location.search).get("scale") === "half") {
+        document.getElementById("editor").style.width = "200px"
+      }
+
       const canvas = document.createElement("canvas")
       canvas.width = 400
       canvas.height = 300

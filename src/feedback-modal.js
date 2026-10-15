@@ -53,7 +53,7 @@ export function openFeedbackModal({
         ${iconButton({ attr: "data-action", key: "delete", label: "Delete" })}
       </div>
       <p class="harness-hint"></p>
-      <div class="harness-editor"></div>
+      <div class="harness-editor"><div></div></div>
       <textarea class="harness-text" rows="3" placeholder="Anything else? Type your feedback here."></textarea>
       <p class="harness-error" hidden></p>
       <div class="harness-actions">
@@ -64,7 +64,7 @@ export function openFeedbackModal({
   root.appendChild(overlay)
 
   const editor = createEditor({
-    container: overlay.querySelector(".harness-editor"),
+    container: overlay.querySelector(".harness-editor > div"),
     image,
   })
   const hint = overlay.querySelector(".harness-hint")
