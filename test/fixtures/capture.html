@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/test/fixtures/build/entry.css" />
+    <style>
+      body {
+        margin: 0;
+      }
+      #red {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px;
+        height: 200px;
+        background: #ff0000;
+      }
+      #chrome {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        background: #0000ff;
+      }
+      #green {
+        position: absolute;
+        left: 0;
+        top: 1000px;
+        width: 300px;
+        height: 200px;
+        background: #00ff00;
+      }
+      #spacer {
+        height: 1800px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="red"></div>
+    <div id="chrome" data-harness-chrome></div>
+    <div id="green"></div>
+    <div id="spacer"></div>
+    <script type="module">
+      import "/test/fixtures/build/entry.js"
+      window.fixtureReady = true
+    </script>
+  </body>
+</html>
