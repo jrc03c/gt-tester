@@ -44,6 +44,7 @@ export async function mountReviewer({
   })
 
   async function giveFeedback() {
+    const snapshot = context.snapshot()
     controls.setBusy(true)
     let image
     try {
@@ -54,7 +55,6 @@ export async function mountReviewer({
     }
     controls.setBusy(false)
 
-    const snapshot = context.snapshot()
     openFeedbackModal({
       image,
       onSend: ({ annotations, text }) =>

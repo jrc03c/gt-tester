@@ -52,6 +52,29 @@ test("runs the program and sends feedback with context", async () => {
   })
 })
 
+test("the context snapshot is taken when the button is clicked, not after capture", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openReviewer(page, baseUrl, "abc1234", "test")
+    await page.waitForSelector(".program_container .main p")
+
+    await page.evaluate(() => {
+      document.querySelector(".harness-feedback-button").click()
+      document.querySelector(".program_container .main .next").click()
+    })
+
+    await page.waitForSelector(".harness-modal")
+    await page.fill(".harness-text", "racing the capture")
+    await page.click('[data-action="send"]')
+    await page.waitForSelector(".harness-modal", { state: "detached" })
+
+    const [item] = await page.evaluate(() => window.sent)
+    assert.deepEqual(item.context.lines, [
+      { from: 1, to: 3, program: "main" },
+      { from: 10, to: 12, program: "main" },
+    ])
+  })
+})
+
 test("shows setup instructions when the embed is refused", async () => {
   await withPage(async ({ page, baseUrl }) => {
     await openReviewer(page, baseUrl, "refused", "test")
