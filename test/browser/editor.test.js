@@ -231,3 +231,78 @@ test("pointer positions scale to image pixels when the image is shrunk", async (
     ])
   })
 })
+
+test("a second pointer does not disturb a pen stroke in progress", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openEditor(page, baseUrl)
+    await setTool(page, "pen")
+    await page.mouse.move(50, 50)
+    await page.mouse.down()
+    await page.mouse.move(100, 50, { steps: 4 })
+
+    await page.evaluate(() => {
+      const svg = document.querySelector(".harness-annotator-svg")
+      const fire = (type, x, y) =>
+        svg.dispatchEvent(
+          new PointerEvent(type, {
+            pointerId: 2,
+            pointerType: "touch",
+            isPrimary: false,
+            button: type === "pointermove" ? -1 : 0,
+            buttons: type === "pointerup" ? 0 : 1,
+            clientX: x,
+            clientY: y,
+            bubbles: true,
+            cancelable: true,
+          }),
+        )
+      fire("pointerdown", 200, 200)
+      fire("pointermove", 220, 250)
+      fire("pointerup", 220, 250)
+    })
+
+    await page.mouse.move(150, 50, { steps: 4 })
+    await page.mouse.up()
+
+    const list = await annotations(page)
+    assert.equal(list.length, 1)
+    assert.deepEqual(rounded(list[0].points), [
+      [50, 50],
+      [150, 50],
+    ])
+  })
+})
+
+test("undo while callout text is dirty records the edit once", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openEditor(page, baseUrl)
+    await setTool(page, "callout")
+    await page.mouse.click(100, 200)
+    await page.keyboard.type("Hi")
+
+    await page.evaluate(() => window.editor.undo())
+    let list = await annotations(page)
+    assert.equal(list.length, 1)
+    assert.equal(list[0].text, "")
+
+    await page.evaluate(() => window.editor.undo())
+    assert.deepEqual(await annotations(page), [])
+  })
+})
+
+test("deleteSelected while callout text is dirty can be undone in one step", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openEditor(page, baseUrl)
+    await setTool(page, "callout")
+    await page.mouse.click(100, 200)
+    await page.keyboard.type("Hi")
+
+    await page.evaluate(() => window.editor.deleteSelected())
+    assert.deepEqual(await annotations(page), [])
+
+    await page.evaluate(() => window.editor.undo())
+    const list = await annotations(page)
+    assert.equal(list.length, 1)
+    assert.equal(list[0].text, "Hi")
+  })
+})

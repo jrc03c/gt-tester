@@ -5,7 +5,10 @@ const STYLESHEETS = ["bootstrap.css", "guidedtrack.css"]
 const SCRIPTS = ["jquery_gt.js", "bootstrap.min.js", "gt_interpreter.js"]
 const EVENTS = ["pageStart", "append", "pageEnd", "done", "trace"]
 
-// Copied from temp/guidedtrack-web/app/views/programs/_program_container.html.erb.
+// Copied from GuidedTrack's app/views/programs/_program_container.html.erb,
+// except data-recaptcha-site-key (and the stage-only data-host): the harness
+// has no reCAPTCHA site key, so programs using *question: captcha will not
+// work in the harness.
 export function containerMarkup(key, mode) {
   const modeAttribute = mode === "test" ? ' data-mode="test"' : ""
   return `<div class="guidedtrack program_container" id="${escapeAttr(key)}" data-environment="production"${modeAttribute}>

@@ -25,6 +25,9 @@ export function createEditor({
   let selectedId = null
   let draft = null
   let drag = null
+  // The pointer that started the current draft or drag; others are ignored
+  // so a second finger cannot corrupt a stroke.
+  let activePointerId = null
   let textDirty = false
   const history = createHistory(state)
 
@@ -103,8 +106,13 @@ export function createEditor({
     if (text) text.focus()
   }
 
+  function isOtherPointer(event) {
+    return (draft || drag) && event.pointerId !== activePointerId
+  }
+
   function onPointerDown(event) {
     if (event.button !== 0) return
+    if (isOtherPointer(event)) return
     const role = roleOf(event.target)
     if (role === "text") return
     container.focus({ preventScroll: true })
@@ -112,6 +120,7 @@ export function createEditor({
 
     if (tool === "pen" || tool === "highlight") {
       draft = createStroke(tool, [clampPoint(point, image)])
+      activePointerId = event.pointerId
       svg.setPointerCapture(event.pointerId)
       render()
       event.preventDefault()
@@ -140,12 +149,14 @@ export function createEditor({
 
     selectedId = group.getAttribute("data-id")
     drag = { role: role || "shape", last: point, moved: false }
+    activePointerId = event.pointerId
     svg.setPointerCapture(event.pointerId)
     render()
     event.preventDefault()
   }
 
   function onPointerMove(event) {
+    if (isOtherPointer(event)) return
     if (draft) {
       draft.points.push(clampPoint(toImagePoint(event), image))
       render()
@@ -211,7 +222,9 @@ export function createEditor({
     render()
   }
 
-  function onPointerUp() {
+  function onPointerUp(event) {
+    if (isOtherPointer(event)) return
+    activePointerId = null
     if (draft) {
       state = [...state, { ...draft, points: thinPath(draft.points) }]
       draft = null
@@ -258,6 +271,7 @@ export function createEditor({
   }
 
   function deleteSelected() {
+    flushText()
     if (!selectedId) return
     state = state.filter(shape => shape.id !== selectedId)
     selectedId = null
@@ -266,12 +280,14 @@ export function createEditor({
   }
 
   function undo() {
+    flushText()
     const previous = history.undo()
     if (!previous) return
     state = previous
     selectedId = null
     draft = null
     drag = null
+    activePointerId = null
     onChange(clone(state))
     render()
   }

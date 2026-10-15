@@ -10,7 +10,14 @@ Embed a GuidedTrack program, screenshot it, draw on the screenshot, type feedbac
 
 3. Click **Give feedback** at any point. Draw with the pen or highlighter, add notes that point at parts of the page, type in the box, and click **Send feedback**. One HTML file downloads. Open it in any browser to see the annotated screenshot, the typed feedback, the program lines that were on screen, and the program's variables. To keep the PNG on its own, right-click the screenshot in that file and save it. The file also embeds the full feedback record as JSON (in the `feedback-sidecar` script element) for tools to read.
 
-"Reset everything" in GuidedTrack's menu works because the harness keeps all its state in the query string.
+"Reset everything" in GuidedTrack's menu works because the harness keeps the program and mode in the query string (the reviewer's name is remembered separately, in the browser). It only brings you back to the harness when you opened the harness at the address you saved on the Publish page, for example `https://<user>.github.io/<repo>/` rather than `https://<user>.github.io/<repo>/index.html`.
+
+## Known limits
+
+- Programs that use `*question: captcha` do not work in the harness, because the harness has no reCAPTCHA site key to give GuidedTrack.
+- Screenshots are made by redrawing the page's DOM, not by copying the screen. Fixed-position elements other than the harness's own controls may land where they sit in the document rather than where they appeared on screen.
+- The reviewer's name is stored in the browser, not in the link, so it does not carry over to another browser or device.
+- "Reset everything" returns to the harness only when the harness was opened at the exact address saved on the Publish page (`/<repo>/`, not `/<repo>/index.html`).
 
 ## Development
 
