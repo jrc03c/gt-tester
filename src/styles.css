@@ -11,3 +11,59 @@ body {
   color: var(--harness-text);
   font-family: system-ui, sans-serif;
 }
+
+/* Annotation editor */
+.harness-annotator {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.harness-annotator img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.harness-annotator-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.harness-annotator-svg[data-tool="pen"],
+.harness-annotator-svg[data-tool="highlight"] {
+  cursor: crosshair;
+}
+
+.harness-annotator-svg[data-tool="callout"] {
+  cursor: copy;
+}
+
+.harness-annotator-svg[data-tool="select"] [data-role="shape"],
+.harness-annotator-svg[data-tool="select"] [data-role="box"] {
+  cursor: move;
+}
+
+.harness-annotator-svg[data-tool="select"] [data-role="anchor"] {
+  cursor: crosshair;
+}
+
+.harness-callout-text {
+  font: 14px/18px sans-serif;
+  color: #000;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: text;
+  cursor: text;
+  line-height: 18px;
+}

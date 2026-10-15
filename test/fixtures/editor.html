@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/test/fixtures/build/entry.css" />
+    <style>
+      body {
+        margin: 0;
+      }
+      #editor {
+        width: 400px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="editor"></div>
+    <script type="module">
+      import "/test/fixtures/build/entry.js"
+
+      const canvas = document.createElement("canvas")
+      canvas.width = 400
+      canvas.height = 300
+      const context = canvas.getContext("2d")
+      context.fillStyle = "#dddddd"
+      context.fillRect(0, 0, 400, 300)
+
+      window.changes = []
+      window.editor = window.harness.createEditor({
+        container: document.getElementById("editor"),
+        image: { url: canvas.toDataURL(), width: 400, height: 300 },
+        onChange: annotations => window.changes.push(annotations),
+      })
+      window.editorReady = true
+    </script>
+  </body>
+</html>
