@@ -6,12 +6,19 @@ import { openFeedbackModal } from "../feedback-modal.js"
 
 export const NAME_KEY = "harness:reviewer-name"
 
+// sendFeedback(item) receives
+//   { key, mode, image: { blob, url, width, height, scale }, annotations,
+//     text, context, reviewerName }
+// where image.blob is always a Blob (a PNG placeholder if capture failed).
+// image.url is an object URL the harness revokes once sendFeedback resolves,
+// so read the Blob, not the URL, after that.
 export async function mountReviewer({
   root,
   route,
   sendFeedback,
   assetBase,
   storage = window.localStorage,
+  capture = captureViewport,
 }) {
   root.innerHTML = '<div class="harness-program"></div>'
   const programRoot = root.querySelector(".harness-program")
@@ -48,17 +55,17 @@ export async function mountReviewer({
     controls.setBusy(true)
     let image
     try {
-      image = await captureViewport()
+      image = await capture()
     } catch (error) {
       console.error("[harness] capture failed", error)
-      image = placeholderImage()
+      image = await placeholderImage()
     }
     controls.setBusy(false)
 
     openFeedbackModal({
       image,
-      onSend: ({ annotations, text }) =>
-        sendFeedback({
+      onSend: async ({ annotations, text }) => {
+        await sendFeedback({
           key: route.key,
           mode: route.mode,
           image,
@@ -66,7 +73,10 @@ export async function mountReviewer({
           text,
           context: snapshot,
           reviewerName: readName(storage),
-        }),
+        })
+        URL.revokeObjectURL(image.url)
+      },
+      onCancel: () => URL.revokeObjectURL(image.url),
     })
   }
 }
@@ -114,7 +124,7 @@ function saveName(storage, value) {
   }
 }
 
-function placeholderImage() {
+async function placeholderImage() {
   const canvas = document.createElement("canvas")
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
@@ -128,10 +138,17 @@ function placeholderImage() {
     20,
     40,
   )
+  const blob = await new Promise((resolve, reject) =>
+    canvas.toBlob(
+      result => (result ? resolve(result) : reject(new Error("toBlob failed"))),
+      "image/png",
+    ),
+  )
   return {
-    url: canvas.toDataURL(),
+    blob,
+    url: URL.createObjectURL(blob),
     width: canvas.width,
     height: canvas.height,
-    blob: null,
+    scale: 1,
   }
 }

@@ -106,3 +106,40 @@ test("shows an error when GuidedTrack cannot be loaded", async () => {
     )
   })
 })
+
+test("opens the modal with a placeholder when capture fails", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await page.goto(`${baseUrl}/test/fixtures/reviewer.html`)
+    await page.waitForFunction(() => window.fixtureReady === true)
+    await page.evaluate(() =>
+      window.mount("abc1234", "test", undefined, async () => {
+        throw new Error("boom")
+      }),
+    )
+    await page.waitForSelector(".program_container .main p")
+
+    await page.click(".harness-feedback-button")
+    await page.waitForSelector(".harness-modal")
+    assert.match(
+      await page.locator(".harness-modal img").getAttribute("src"),
+      /^blob:/,
+    )
+
+    await page.click('[data-action="send"]')
+    await page.waitForSelector(".harness-modal", { state: "detached" })
+    const [item] = await page.evaluate(() => window.sent)
+    assert.equal(item.imageType, "image/png")
+    assert.equal(item.imageWidth, 800)
+    assert.equal(item.imageHeight, 600)
+    // The object URL is revoked once sendFeedback resolves.
+    const stillLoads = await page.evaluate(
+      url =>
+        fetch(url).then(
+          () => true,
+          () => false,
+        ),
+      item.imageUrl,
+    )
+    assert.equal(stillLoads, false)
+  })
+})

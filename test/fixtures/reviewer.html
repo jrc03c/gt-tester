@@ -10,11 +10,17 @@
       import "/test/fixtures/build/entry.js"
 
       window.sent = []
-      window.mount = (key, mode, assetBase = "/test/fixtures/gt-stub") =>
+      window.mount = (
+        key,
+        mode,
+        assetBase = "/test/fixtures/gt-stub",
+        capture = undefined,
+      ) =>
         window.harness.mountReviewer({
           root: document.getElementById("app"),
           route: { screen: "reviewer", key, mode },
           assetBase,
+          capture,
           sendFeedback: async item => {
             window.sent.push({
               key: item.key,
@@ -26,6 +32,7 @@
               imageWidth: item.image.width,
               imageHeight: item.image.height,
               imageType: item.image.blob && item.image.blob.type,
+              imageUrl: item.image.url,
             })
           },
         })
