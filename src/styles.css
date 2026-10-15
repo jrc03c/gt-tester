@@ -1,0 +1,13 @@
+:root {
+  --harness-accent: #1e88e5;
+  --harness-danger: #e53935;
+  --harness-text: #222;
+  --harness-bg: #fff;
+}
+
+body {
+  margin: 0;
+  background: var(--harness-bg);
+  color: var(--harness-text);
+  font-family: system-ui, sans-serif;
+}
