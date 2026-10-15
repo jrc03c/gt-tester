@@ -15,18 +15,24 @@ export async function withPage(
     throw new Error(INSTALL_HINT)
   }
 
-  const server = await startServer()
-  const browser = await playwright.chromium.launch()
-  const page = await browser.newPage({ viewport })
-  const errors = []
-  page.on("pageerror", error => errors.push(error))
+  let server
+  let browser
 
   try {
+    server = await startServer()
+    browser = await playwright.chromium.launch()
+    const page = await browser.newPage({ viewport })
+    const errors = []
+    page.on("pageerror", error => errors.push(error))
+
     await fn({ page, baseUrl: server.url })
+    // Round trip to the page so any pageerror queued after fn resolved is
+    // delivered (in order) before we decide whether to throw.
+    await page.evaluate(() => undefined)
     if (errors.length > 0) throw errors[0]
   } finally {
-    await browser.close()
-    await server.close()
+    if (browser) await browser.close()
+    if (server) await server.close()
   }
 }
 
