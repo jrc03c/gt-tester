@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node build.mjs",
     "watch": "node build.mjs --watch",
-    "test": "npm run test:unit && npm run test:browser",
+    "test": "npm run build && npm run test:unit && node --test --test-concurrency=1 \"test/browser/**/*.test.js\"",
     "test:unit": "node --test \"test/unit/**/*.test.js\"",
     "test:browser": "npm run build && node --test --test-concurrency=1 \"test/browser/**/*.test.js\"",
     "format": "prettier --write ."

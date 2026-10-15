@@ -18,7 +18,7 @@ Requirements: Node 24. Browser tests need Playwright 1.49.0 and its Chromium. Th
 
 - `npm install`
 - `npm run build` or `npm run watch`
-- `npm test` runs the unit tests, then builds and runs the browser tests
+- `npm test` builds, then runs the unit tests, then the browser tests
 - `npm run format`
 
 Serve the repository root with any static server (for example `npx serve .`) and open `index.html` through it. Opening the file directly from disk does not work because the page uses module scripts.
