@@ -242,6 +242,15 @@ body {
     padding: 12px;
   }
 
+  .harness-toolbar .harness-label {
+    display: none;
+  }
+
+  .harness-toolbar button {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
   .harness-name input {
     width: 110px;
   }

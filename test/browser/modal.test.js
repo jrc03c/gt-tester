@@ -89,6 +89,23 @@ test("a failed send shows the error and offers retry", async () => {
   })
 })
 
+test("cancel is disabled while sending", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await open(page, baseUrl)
+    await page.evaluate(() => (window.deferSend = true))
+    await page.click('[data-action="send"]')
+    assert.equal(
+      await page.locator('[data-action="cancel"]:disabled').count(),
+      1,
+    )
+    assert.equal(await page.locator('[data-action="send"]:disabled').count(), 1)
+    await page.evaluate(() => window.pendingSend.resolve())
+    await page.waitForSelector(".harness-modal", { state: "detached" })
+    assert.equal(await page.evaluate(() => window.cancelled), 0)
+    assert.equal(await page.evaluate(() => window.sent.length), 1)
+  })
+})
+
 test("cancel closes without sending", async () => {
   await withPage(async ({ page, baseUrl }) => {
     await open(page, baseUrl)

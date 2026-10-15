@@ -15,6 +15,19 @@ export const HINTS = {
   callout: "Click where the note should point.",
 }
 
+const ICONS = {
+  select: "&#x2196;",
+  pen: "&#x270F;",
+  highlight: "&#x1F58D;",
+  callout: "&#x1F4AC;",
+  undo: "&#x21A9;",
+  delete: "&#x1F5D1;",
+}
+
+function iconButton({ attr, key, label, extra = "" }) {
+  return `<button type="button" ${attr}="${key}"${extra} aria-label="${label}"><span class="harness-icon" aria-hidden="true">${ICONS[key]}</span><span class="harness-label">${label}</span></button>`
+}
+
 export function openFeedbackModal({
   image,
   onSend,
@@ -27,13 +40,17 @@ export function openFeedbackModal({
   overlay.innerHTML = `
     <div class="harness-modal-dialog" role="dialog" aria-modal="true" aria-label="Give feedback">
       <div class="harness-toolbar">
-        ${TOOLS.map(
-          tool =>
-            `<button type="button" data-tool="${tool}" aria-pressed="false">${TOOL_LABELS[tool]}</button>`,
+        ${TOOLS.map(tool =>
+          iconButton({
+            attr: "data-tool",
+            key: tool,
+            label: TOOL_LABELS[tool],
+            extra: ' aria-pressed="false"',
+          }),
         ).join("")}
         <span class="harness-toolbar-spacer"></span>
-        <button type="button" data-action="undo">Undo</button>
-        <button type="button" data-action="delete">Delete</button>
+        ${iconButton({ attr: "data-action", key: "undo", label: "Undo" })}
+        ${iconButton({ attr: "data-action", key: "delete", label: "Delete" })}
       </div>
       <p class="harness-hint"></p>
       <div class="harness-editor"></div>
@@ -81,15 +98,15 @@ export function openFeedbackModal({
   overlay
     .querySelector('[data-action="delete"]')
     .addEventListener("click", () => editor.deleteSelected())
-  overlay
-    .querySelector('[data-action="cancel"]')
-    .addEventListener("click", () => {
-      close()
-      onCancel()
-    })
+  const cancelButton = overlay.querySelector('[data-action="cancel"]')
+  cancelButton.addEventListener("click", () => {
+    close()
+    onCancel()
+  })
 
   sendButton.addEventListener("click", async () => {
     sendButton.disabled = true
+    cancelButton.disabled = true
     sendButton.textContent = "Sending…"
     error.hidden = true
     try {
@@ -102,6 +119,7 @@ export function openFeedbackModal({
       error.textContent = `Could not send: ${failure.message}`
       error.hidden = false
       sendButton.disabled = false
+      cancelButton.disabled = false
       sendButton.textContent = "Retry"
     }
   })

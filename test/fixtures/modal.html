@@ -18,6 +18,7 @@
       window.sent = []
       window.cancelled = 0
       window.failNext = false
+      window.deferSend = false
       window.openModal = () => {
         window.modal = window.harness.openFeedbackModal({
           image: window.image,
@@ -26,6 +27,12 @@
             if (window.failNext) {
               window.failNext = false
               throw new Error("network down")
+            }
+            if (window.deferSend) {
+              window.deferSend = false
+              await new Promise(resolve => {
+                window.pendingSend = { resolve }
+              })
             }
           },
           onCancel: () => window.cancelled++,
