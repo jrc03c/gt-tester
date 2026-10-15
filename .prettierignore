@@ -1,0 +1,8 @@
+temp
+.claude
+.superpowers
+docs
+dist
+test/fixtures/build
+spikes/out
+package-lock.json
