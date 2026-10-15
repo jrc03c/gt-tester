@@ -36,15 +36,23 @@ const counts = await page.evaluate(() => {
 })
 console.log("compiled nodes with line_number:", JSON.stringify(counts, null, 2))
 
+const input = page
+  .locator(
+    ".program_container .main input[type=text], .program_container .main textarea",
+  )
+  .first()
+if ((await input.count()) > 0) await input.fill("spike")
 const button = page
-  .locator(".program_container .main button, .program_container .main .btn")
+  .locator(
+    ".program_container .main button:enabled, .program_container .main .btn:not([disabled])",
+  )
   .first()
 if ((await button.count()) > 0) {
   await button.click()
   await page.waitForTimeout(2000)
 } else {
   console.log(
-    "no button found on the first page; traces below are from page load only",
+    "no enabled button found on the first page; traces below are from page load only",
   )
 }
 
