@@ -69,4 +69,12 @@ Consequence: Compiled nodes clearly carry `line_number` in the public build (64 
 
 ## Spike B: screenshot fidelity
 
-(filled in by Task 3)
+Program tested: `odwuk6y`
+
+Render time: 554 ms
+
+Result: ACCEPTABLE
+
+What differed: Both `spikes/out/real.png` (a real Playwright screenshot) and `spikes/out/dom.png` (modern-screenshot's `domToPng` render of the same page) show the identical first-page layout: the three-dot menu icon and divider at the top, the "What's your name?" label, a teal-bordered text input, a solid teal "Submit" button with white text, and the "Powered by GuidedTrack" badge in the bottom-right corner, all in matching positions and fonts. The only visible difference is that the Submit button's teal fill looks very slightly flatter and more uniform in the DOM render than in the real screenshot, which shows faint shading; no text, buttons, or layout elements are missing in either image.
+
+Consequence: Task 10 uses modern-screenshot.
