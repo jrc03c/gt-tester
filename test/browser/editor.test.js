@@ -155,3 +155,62 @@ test("clicking empty space deselects and onChange fires on commits", async () =>
     assert.equal(changes, 1)
   })
 })
+
+test("switching tools while editing callout text does not throw and keeps the text", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openEditor(page, baseUrl)
+    await setTool(page, "callout")
+    await page.mouse.click(100, 200)
+    await page.keyboard.type("Hi")
+
+    const firstError = await page.evaluate(() => {
+      try {
+        window.editor.setTool("select")
+        return null
+      } catch (error) {
+        return error.message
+      }
+    })
+    assert.equal(firstError, null)
+
+    const [callout] = await annotations(page)
+    assert.equal(callout.text, "Hi")
+
+    const secondError = await page.evaluate(() => {
+      try {
+        window.editor.setTool("pen")
+        return null
+      } catch (error) {
+        return error.message
+      }
+    })
+    assert.equal(secondError, null)
+  })
+})
+
+test("strokes are clamped to the image", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openEditor(page, baseUrl)
+    await setTool(page, "pen")
+    await drag(page, [380, 20], [430, 20])
+    const [stroke] = await annotations(page)
+    assert.ok(stroke.points.every(([x]) => x <= 400))
+    const [lastX, lastY] = stroke.points[stroke.points.length - 1]
+    assert.deepEqual([Math.round(lastX), Math.round(lastY)], [400, 20])
+  })
+})
+
+test("moving a stroke stops at the image edge", async () => {
+  await withPage(async ({ page, baseUrl }) => {
+    await openEditor(page, baseUrl)
+    await setTool(page, "pen")
+    await drag(page, [50, 50], [150, 50])
+    await setTool(page, "select")
+    await drag(page, [100, 50], [400, 50])
+    const [stroke] = await annotations(page)
+    assert.deepEqual(rounded(stroke.points), [
+      [300, 50],
+      [400, 50],
+    ])
+  })
+})

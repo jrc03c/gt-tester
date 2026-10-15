@@ -6,6 +6,7 @@ import {
   createCallout,
   createHistory,
   createStroke,
+  strokeBounds,
   thinPath,
   translateShape,
 } from "./model.js"
@@ -44,6 +45,7 @@ export function createEditor({
   container.appendChild(svg)
 
   function render() {
+    flushText()
     const tree = toDom(
       renderTree(state, image, { mode: "live", selectedId, draft }),
     )
@@ -79,6 +81,19 @@ export function createEditor({
     onChange(clone(state))
   }
 
+  // Persist a pending contenteditable text edit into history without
+  // triggering a render. render() calls this first so that replacing the
+  // SVG's children never removes a focused, still-dirty text node: by the
+  // time replaceChildren runs, textDirty is already false, so the
+  // synchronous focusout that the removal fires finds nothing to flush and
+  // does not re-render.
+  function flushText() {
+    if (!textDirty) return
+    textDirty = false
+    history.push(state)
+    onChange(clone(state))
+  }
+
   function isEditingText() {
     return roleOf(document.activeElement) === "text"
   }
@@ -96,7 +111,7 @@ export function createEditor({
     const point = toImagePoint(event)
 
     if (tool === "pen" || tool === "highlight") {
-      draft = createStroke(tool, [point])
+      draft = createStroke(tool, [clampPoint(point, image)])
       svg.setPointerCapture(event.pointerId)
       render()
       event.preventDefault()
@@ -132,7 +147,7 @@ export function createEditor({
 
   function onPointerMove(event) {
     if (draft) {
-      draft.points.push(toImagePoint(event))
+      draft.points.push(clampPoint(toImagePoint(event), image))
       render()
       return
     }
@@ -171,8 +186,27 @@ export function createEditor({
           image,
         ),
       })
+    } else if (shape.type === "callout") {
+      // Dragged by its connector line or body; the target has no data-role,
+      // so the role defaulted to "shape" above.
+      const moved = translateShape(shape, dx, dy)
+      replace({
+        ...moved,
+        anchor: clampPoint(moved.anchor, image),
+        box: clampBox(moved.box, image),
+      })
     } else {
-      replace(translateShape(shape, dx, dy))
+      // A stroke dragged by its hit path: limit dx/dy so its bounds stay
+      // inside the image instead of clamping each point independently
+      // (which would distort the stroke's shape).
+      const bounds = strokeBounds(shape.points)
+      const minDx = -bounds.x
+      const maxDx = image.width - (bounds.x + bounds.w)
+      const minDy = -bounds.y
+      const maxDy = image.height - (bounds.y + bounds.h)
+      const clampedDx = Math.min(Math.max(dx, minDx), maxDx)
+      const clampedDy = Math.min(Math.max(dy, minDy), maxDy)
+      replace(translateShape(shape, clampedDx, clampedDy))
     }
     render()
   }
@@ -205,8 +239,7 @@ export function createEditor({
   function onFocusOut(event) {
     if (roleOf(event.target) !== "text") return
     if (!textDirty) return
-    textDirty = false
-    commit()
+    flushText()
     render()
   }
 
